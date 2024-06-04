@@ -1,6 +1,8 @@
 
 import { Outlet } from "react-router-dom";
-import { ComplexNavbar } from "../../Components/Shareds/Navbar/Navbar";
+import MyNavbar from "../../Components/Shareds/Navbar/MyNavbar";
+
+
 
 
 
@@ -10,7 +12,8 @@ const Main = () => {
     return (
         <div className="mt-2 mx-1">
 
-            <ComplexNavbar></ComplexNavbar>
+            
+          <MyNavbar></MyNavbar>
             <Outlet></Outlet>
             <h1>by</h1>
             
