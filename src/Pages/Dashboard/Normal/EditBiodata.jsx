@@ -83,7 +83,7 @@ const EditBiodata = () => {
         
         .then(result=>{
           console.log(result.data);
-          if(result.data.modifiedCount > 0 || res.data.upsertedCount > 0){
+          if(result.data.modifiedCount > 0 || result.data.upsertedCount > 0  ){
         
             Swal.fire({
               position: "top-end",
