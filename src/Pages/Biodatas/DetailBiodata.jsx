@@ -1,0 +1,184 @@
+import { useQuery } from "@tanstack/react-query";
+import { Link, useParams } from "react-router-dom";
+import UseAxiosPublic from "../../Hooks/UseAxiosPublic";
+import UseAuth from "../../Hooks/UseAuth";
+import BiodataCard from "./BiodataCard";
+import Heading from "../Dashboard/Sidebar/Heading";
+import Swal from "sweetalert2";
+import UserRole from "../../Hooks/UserRole";
+
+
+
+const DetailBiodata = () => {
+    const {user}=UseAuth()
+   const [role]=UserRole();
+ 
+
+const axiosPublic=UseAxiosPublic()
+const {id}=useParams()
+    console.log(id);
+    const {data:mydata}=useQuery({
+        queryKey:['data'],
+        queryFn:async()=>{
+            const res = await axiosPublic.get(`/biodatas/${id}`)
+
+            return res.data
+        }
+  
+    })
+    const {data:alldata}=useQuery({
+        queryKey:['alldata'],
+        queryFn:async()=>{
+            const res = await axiosPublic.get(`/biodatas`)
+
+            return res.data[0]
+        }
+  
+    })
+console.log(alldata);
+  
+    const filtered = alldata?.filter((datas)=>datas.biodataType === mydata?.biodataType).slice(0,3)
+    console.log(filtered);
+
+    const handlemyourite=async()=>{
+          
+    const myfavouriteData={
+        Name:mydata?.name,
+        BiodataId:mydata?.biodataId,
+        ParmanentAddress:mydata?.ParmanentDivison,
+        Occupation:mydata?.Occupation,
+        useremail:user?.email
+    }
+   try{
+    const res = await axiosPublic.post('/favourites',myfavouriteData)
+    console.log(res.data);
+      if(res.data.insertedId){
+
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Add to Favourites Successfully",
+          showConfirmButton: false,
+          timer: 1500
+        });
+      }
+   }catch(err){
+    if(err.response.status){
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Already Added to Favourites ",
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }
+   }
+  
+    }
+    return (
+        <div className=" p-6 rounded-md">
+          <Heading subheading={'you can see deatils of a biodata'} heading={'Detail Biodata'}></Heading>
+        <div className="bg-rose-100 rounded-sm p-5">
+          {/* first */}
+          <div className="md:flex  border-b-2 border-y-black pb-4  items-center ">
+            <div className="row-span-3  md:w-1/3">
+              <img
+                className=" rounded-full mx-auto w-24 lg:w-44 h-24  lg:h-44"
+                src={mydata?.photo}
+                alt=""
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
+              <div className="text-lg w-full bg-white rounded-md text-black p-2">
+                Name : {mydata?.name}
+              </div>
+              <div className="text-lg w-full bg-white rounded-md text-black p-2">
+                Biodata Type : {mydata?.biodataType}
+              </div>
+              <div className="text-lg w-full bg-white rounded-md text-black p-2">
+                BirthDate : {mydata?.birthDate?.slice(0, 10)}
+              </div>
+              <div className="text-lg w-full bg-white rounded-md text-black p-2">
+                Occupation : {mydata?.Occupation}
+              </div>
+              <div className="text-lg w-full bg-white rounded-md text-black p-2">
+                Height : {mydata?.Height}
+              </div>
+              <div className="text-lg w-full bg-white rounded-md text-black p-2">
+                Age : {mydata?.Age}
+              </div>
+            </div>
+          </div>
+  
+          {/*  */}
+  
+          <div className="mx-auto pb-4 grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3  gap-3 md:gap-5 pt-16">
+            <div className="text-lg w-full bg-white rounded-md text-black p-2">
+              ParmanentDivison : {mydata?.ParmanentDivison}
+            </div>
+            <div className="text-lg w-full bg-white rounded-md text-black p-2">
+              Weight : {mydata?.Weight}
+            </div>
+            <div className="text-lg w-full bg-white rounded-md text-black p-2">
+              PresentDivison : {mydata?.PresentDivison}
+            </div>
+            <div className="text-lg w-full bg-white rounded-md text-black p-2">
+              Race : {mydata?.Race}
+            </div>
+            <div className="text-lg w-full bg-white rounded-md text-black p-2">
+              FatherName : {mydata?.FatherName}
+            </div>
+            <div className="text-lg w-full bg-white rounded-md text-black p-2">
+              MotherName : {mydata?.MotherName}
+            </div>
+            <div className="text-lg w-full bg-white rounded-md text-black p-2">
+              ExceptedPartnerWeight : {mydata?.PartnerWeight}
+            </div>
+            <div className="text-lg w-full bg-white rounded-md text-black p-2">
+              ExceptedParnerHeight : {mydata?.PartnerHeight}
+            </div>
+            <div className="text-lg w-full bg-white rounded-md text-black p-2">
+              ExceptedPartnerAge : {mydata?.PartnerAge}
+            </div>
+          {  role[1] ==='premium' ? <><div className="text-lg w-full bg-white rounded-md text-black p-2">
+              ContactEmail : {mydata?.ContactEmail}
+            </div></> : <><div className="text-lg w-full bg-rose-200 rounded-md text-black p-2">
+            except Contact Information for Email
+            </div></>}  
+          {role[1] ==='premium'?<div className="text-lg w-full bg-white rounded-md text-black p-2">
+              MobileNumber : {mydata?.MobileNumber}
+            </div>: <div className="text-lg w-full bg-rose-200 rounded-md text-black p-2">
+            except Contact Information for MobileNumber
+            </div>}  
+            <button onClick={()=>handlemyourite(mydata)} className="text-lg w-full bg-white rounded-md text-black p-2">
+Add to MyFavourites
+            </button>
+            <div className="text-lg w-full  rounded-md text-black ">
+              { role[0] !== 'premium'? <button
+             
+                className="bg-rose-200 p-2 w-full hover:bg-rose-300 rounded-md"
+              >
+               
+               Request Contact Information
+              </button>  :  <button
+                disabled
+                className="bg-rose-200 p-2 w-full  rounded-md"
+              >
+               {role[1]} user
+              </button>  }
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 mt-10 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {
+                      filtered?.map(data=> <BiodataCard key={data?._id} data={data}></BiodataCard>)
+                    } 
+                </div>
+
+            <Link className="my-5 flex justify-center" to={'/biodatas'}> <button className="text-2xl text-rose-300 font-mono text-centre mt-5">Show more... </button></Link>   
+
+      </div>
+    );
+};
+
+export default DetailBiodata;
