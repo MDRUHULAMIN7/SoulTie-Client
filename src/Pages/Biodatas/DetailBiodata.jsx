@@ -6,13 +6,14 @@ import BiodataCard from "./BiodataCard";
 import Heading from "../Dashboard/Sidebar/Heading";
 import Swal from "sweetalert2";
 import UserRole from "../../Hooks/UserRole";
+import { useState } from "react";
 
 
 
 const DetailBiodata = () => {
     const {user}=UseAuth()
    const [role]=UserRole();
- 
+ const[isIpoen,SetIsOpen]=useState(false)
 
 const axiosPublic=UseAxiosPublic()
 const {id}=useParams()
@@ -74,6 +75,13 @@ console.log(alldata);
     }
    }
   
+    }
+
+    const openModal=()=>{
+      SetIsOpen(true)
+    }
+    const closeModal=()=>{
+      SetIsOpen(false)
     }
     return (
         <div className=" p-6 rounded-md">
@@ -155,7 +163,7 @@ Add to MyFavourites
             </button>
             <div className="text-lg w-full  rounded-md text-black ">
               { role[0] !== 'premium'? <button
-             
+             onClick={openModal}
                 className="bg-rose-200 p-2 w-full hover:bg-rose-300 rounded-md"
               >
                
@@ -167,15 +175,35 @@ Add to MyFavourites
                {role[1]} user
               </button>  }
             </div>
+
+            {/* modal   */}
+   <div className={isIpoen ?"  bg-rose-50 absolute left-1/3 px-8 py-4 rounded-md w-2/5 " : "hidden"}>
+      
+      <div className=" space-y-3">
+        <h1 className="text-2xl flex justify-center  font-medium text-black">You have to Payment <span className="font-semibold mx-2 text-2xl text-rose-400">5$ </span>for Contact Request</h1> <br />
+        <h2 className="text-lg text-center mx-2">After contact request you have to wait sometime for admin approvel. When admin approve your cotact request your can see the contact information</h2>
+      </div>
+   <div className="flex justify-between items-center">
+   <button onClick={closeModal} className="btn px-4 text-lg bg-rose-100 text-black">Cancel</button>
+   <Link to={'/dashboard/payment'}  className="btn px-4 text-lg bg-rose-100 text-black">Continue</Link>
+   </div>
+
+   
+   </div>
+                
+
+{/*  */}
           </div>
         </div>
+
+        <Heading subheading={'see some similar biodata here...'} heading={'Smimilar Biodata'}></Heading>
         <div className="grid grid-cols-1 mt-10 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     {
                       filtered?.map(data=> <BiodataCard key={data?._id} data={data}></BiodataCard>)
                     } 
                 </div>
 
-            <Link className="my-5 flex justify-center" to={'/biodatas'}> <button className="text-2xl text-rose-300 font-mono text-centre mt-5">Show more... </button></Link>   
+            <Link className="my-5 flex justify-center" to={'/biodatas'}> <button className="text-2xl text-rose-400 font-mono text-centre mt-5">Show more... </button></Link>   
 
       </div>
     );

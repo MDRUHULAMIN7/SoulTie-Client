@@ -17,6 +17,7 @@ import MyFavouriteBiodata from "../Pages/Dashboard/Normal/MyFavouriteBiodata";
 import AdminRoute from "./AdminRoute";
 import Biodatas from "../Pages/Biodatas/Biodatas";
 import DetailBiodata from "../Pages/Biodatas/DetailBiodata";
+import Payment from "../Pages/Dashboard/Payment/Payment";
 
 
 export const router = createBrowserRouter([
@@ -60,6 +61,7 @@ export const router = createBrowserRouter([
                 path:"/dashboard/adminhome",
                 element:<PrivateRoute><AdminRoute><AdminHome></AdminHome></AdminRoute></PrivateRoute>
             },
+          
             {
                 path:'/dashboard/manageusers',
                 element:<PrivateRoute><AdminRoute><ManageUsers></ManageUsers></AdminRoute></PrivateRoute>
@@ -79,6 +81,11 @@ export const router = createBrowserRouter([
                 path:'/dashboard/editbiodata',
                 element:<PrivateRoute><EditBiodata></EditBiodata></PrivateRoute>
             },
+            {
+                path:"/dashboard/payment",
+                element:<PrivateRoute><Payment></Payment></PrivateRoute>
+            }
+            ,
             {
                 path:'/dashboard/viewbiodata',
                 element:<PrivateRoute><ViewBiodata></ViewBiodata></PrivateRoute>
