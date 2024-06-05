@@ -2,9 +2,12 @@ import { loadStripe } from "@stripe/stripe-js";
 import Heading from "../Sidebar/Heading";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckOutForm from "../CheckOutForm.jsx/CheckOutForm";
+import { useParams } from "react-router-dom";
 const stripePromise = loadStripe(import.meta.env.VITE_Payment_Gateway_Pk)
 
 const Payment = () => {
+    const {biodataId}=useParams()
+    console.log(biodataId);
     return (
         <div>
 
@@ -12,7 +15,7 @@ const Payment = () => {
 
             <div>
             <Elements stripe={stripePromise}>
-          <CheckOutForm></CheckOutForm>
+          <CheckOutForm biodataId={biodataId}></CheckOutForm>
             </Elements>
             </div>
             

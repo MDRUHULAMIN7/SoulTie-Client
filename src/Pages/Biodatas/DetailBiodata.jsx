@@ -83,6 +83,7 @@ console.log(alldata);
     const closeModal=()=>{
       SetIsOpen(false)
     }
+   
     return (
         <div className=" p-6 rounded-md">
           <Heading subheading={'you can see deatils of a biodata'} heading={'Detail Biodata'}></Heading>
@@ -185,7 +186,7 @@ Add to MyFavourites
       </div>
    <div className="flex justify-between items-center">
    <button onClick={closeModal} className="btn px-4 text-lg bg-rose-100 text-black">Cancel</button>
-   <Link to={'/dashboard/payment'}  className="btn px-4 text-lg bg-rose-100 text-black">Continue</Link>
+   <Link to={`/dashboard/payment/${mydata?.biodataId}`}  className="btn px-4 text-lg bg-rose-100 text-black">Continue</Link>
    </div>
 
    

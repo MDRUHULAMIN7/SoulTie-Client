@@ -82,7 +82,7 @@ export const router = createBrowserRouter([
                 element:<PrivateRoute><EditBiodata></EditBiodata></PrivateRoute>
             },
             {
-                path:"/dashboard/payment",
+                path:"/dashboard/payment/:biodataId",
                 element:<PrivateRoute><Payment></Payment></PrivateRoute>
             }
             ,

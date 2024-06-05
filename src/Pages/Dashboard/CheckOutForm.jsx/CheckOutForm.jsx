@@ -1,25 +1,36 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import UseAuth from "../../../Hooks/UseAuth";
+import UseAxiosPublic from "../../../Hooks/UseAxiosPublic";
 
 
-const CheckOutForm = () => {
+const CheckOutForm = ({biodataId}) => {
     const stripe = useStripe();
+   const axiosPublic= UseAxiosPublic()
   const elements = useElements();
+  const {user}=UseAuth()
   const[errors,serError]=useState(null)
+  const[   clientSecret,setclientSecret]=useState('')
+  // const price =5;
+  // const email=user?.email
+  useEffect(()=>{
+    axiosPublic.post('/create-payment-intent',{price:5})
+    .then(res=>{
+      console.log(res.data.   clientSecret);
+      setclientSecret(res.data.   clientSecret)
+    })
+  },[axiosPublic])
 
   const handleSubmit = async (event) => {
     // Block native form submission.
     event.preventDefault();
 
     if (!stripe || !elements) {
-      // Stripe.js has not loaded yet. Make sure to disable
-      // form submission until Stripe.js has loaded.
+
       return;
     }
 
-    // Get a reference to a mounted CardElement. Elements knows how
-    // to find your CardElement because there can only ever be one of
-    // each type of element.
+
     const card = elements.getElement(CardElement);
 
     if (card === null) {
@@ -39,13 +50,33 @@ const CheckOutForm = () => {
       console.log('[PaymentMethod]', paymentMethod);
       serError('')
     }
+    const{paymentIntent,error:confirmError}= await stripe.confirmCardPayment(clientSecret,{
+      payment_method:{
+        card:card,
+        billing_details:{
+          email:user?.email,
+          biodataId:biodataId,
+          name:user?.displayName,
+          amount:5
+
+        }
+      }
+    })
+
+    if (confirmError) {
+      console.log('[errorconfirm]',confirmError);
+      
+    } else {
+      console.log('[paymentIntent]', paymentIntent);
+     
+    }
   };
 
     return (
         <div>
             
             <form className=" w-1/2 mx-auto bg-rose-50 ring-offset-cyan-200 p-6 rounded-lg " onSubmit={handleSubmit}>
-           
+           <div className="space-y-2 mb-2 justify-between mx-2 font-medium "> <p>BiodataId:{biodataId}</p> <p>Your email:{user?.email}</p></div>
       <CardElement
         options={{
           style: {
@@ -62,7 +93,7 @@ const CheckOutForm = () => {
           },
         }} className="text-red-400 rounded-xl bg-white p-4"
       />
-      <button  className="px-5 text-center mt-10  py-2 text-xl rounded-lg bg-rose-100" type="submit" disabled={!stripe}>
+      <button  className="px-5 text-center mt-10  py-2 text-xl rounded-lg bg-rose-100" type="submit" disabled={!stripe || !   clientSecret}>
         Pay
       </button>  <p className=" mt-3 text-center text-red-500">{errors}</p>
 
