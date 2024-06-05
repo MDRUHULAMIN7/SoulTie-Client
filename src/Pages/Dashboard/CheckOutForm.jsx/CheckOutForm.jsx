@@ -2,6 +2,8 @@ import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 import UseAuth from "../../../Hooks/UseAuth";
 import UseAxiosPublic from "../../../Hooks/UseAxiosPublic";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 
 const CheckOutForm = ({biodataId}) => {
@@ -11,13 +13,16 @@ const CheckOutForm = ({biodataId}) => {
   const {user}=UseAuth()
   const[errors,serError]=useState(null)
   const[   clientSecret,setclientSecret]=useState('')
+  const [transId,setTransId]=useState('')
+  const navigate = useNavigate()
   // const price =5;
   // const email=user?.email
   useEffect(()=>{
     axiosPublic.post('/create-payment-intent',{price:5})
     .then(res=>{
-      console.log(res.data.   clientSecret);
-      setclientSecret(res.data.   clientSecret)
+      console.log(res.data.clientSecret);
+      setclientSecret(res.data.clientSecret)
+      setTransId('')
     })
   },[axiosPublic])
 
@@ -55,9 +60,9 @@ const CheckOutForm = ({biodataId}) => {
         card:card,
         billing_details:{
           email:user?.email,
-          biodataId:biodataId,
+
           name:user?.displayName,
-          amount:5
+       
 
         }
       }
@@ -68,6 +73,40 @@ const CheckOutForm = ({biodataId}) => {
       
     } else {
       console.log('[paymentIntent]', paymentIntent);
+
+      if(paymentIntent.status ===  "succeeded"){
+        setTransId(paymentIntent.id)
+        
+      }
+    const payment ={
+      email:user?.email,
+      name:user?.displayName,
+      biodataId:biodataId,
+      transactinId:paymentIntent.id,
+      date: new Date(),
+      status:'pending',
+
+    }
+    const res = await axiosPublic.post('/payment',payment)
+     if(res.data.insertedId){
+      Swal.fire({
+        position: "top-center",
+        icon: "success",
+        title: "Payment Successfull Wait for Admin Aproval",
+        showConfirmButton: false,
+        timer: 2500
+      });
+      navigate('/biodatas')
+     }
+     else{
+      Swal.fire({
+        position: "top-center",
+        icon: "error",
+        title: "something wrong",
+        showConfirmButton: false,
+        timer: 2500
+      });
+     }
      
     }
   };
@@ -97,7 +136,8 @@ const CheckOutForm = ({biodataId}) => {
         Pay
       </button>  <p className=" mt-3 text-center text-red-500">{errors}</p>
 
-                
+          {transId ?      <p className="text-green-500 flex justify-center my-4">{transId}Payment Successfull</p>
+          :  ''}
             </form>
         </div>
     );
