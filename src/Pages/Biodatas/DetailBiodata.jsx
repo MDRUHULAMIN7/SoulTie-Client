@@ -36,7 +36,23 @@ const {id}=useParams()
         }
   
     })
-console.log(alldata);
+    const {data:paydata}=useQuery({
+        queryKey:['paydata'],
+        queryFn:async()=>{
+            const res = await axiosPublic.get(`/payments`)
+
+            return res.data
+        }
+  
+    })
+console.log(paydata);
+   
+    const finded = paydata?.find(ids=>parseInt(ids?.biodataId) === mydata?.biodataId)
+       console.log(finded);
+const condition = role[1] ==='premium' || parseInt(finded?.biodataId) === mydata?.biodataId;
+console.log(role[0]);
+
+console.log(condition);
   
     const filtered = alldata?.filter((datas)=>datas.biodataType === mydata?.biodataType).slice(0,3)
     console.log(filtered);
@@ -149,12 +165,12 @@ console.log(alldata);
             <div className="text-lg w-full bg-white rounded-md text-black p-2">
               ExceptedPartnerAge : {mydata?.PartnerAge}
             </div>
-          {  role[1] ==='premium' ? <><div className="text-lg w-full bg-white rounded-md text-black p-2">
+          { condition  ? <><div className="text-lg w-full bg-white rounded-md text-black p-2">
               ContactEmail : {mydata?.ContactEmail}
             </div></> : <><div className="text-lg w-full bg-rose-200 rounded-md text-black p-2">
             except Contact Information for Email
             </div></>}  
-          {role[1] ==='premium'?<div className="text-lg w-full bg-white rounded-md text-black p-2">
+          {condition?<div className="text-lg w-full bg-white rounded-md text-black p-2">
               MobileNumber : {mydata?.MobileNumber}
             </div>: <div className="text-lg w-full bg-rose-200 rounded-md text-black p-2">
             except Contact Information for MobileNumber
@@ -163,18 +179,13 @@ console.log(alldata);
 Add to MyFavourites
             </button>
             <div className="text-lg w-full  rounded-md text-black ">
-              { role[0] !== 'premium'? <button
+              { !condition ? <button
              onClick={openModal}
                 className="bg-rose-200 p-2 w-full hover:bg-rose-300 rounded-md"
               >
                
                Request Contact Information
-              </button>  :  <button
-                disabled
-                className="bg-rose-200 p-2 w-full  rounded-md"
-              >
-               {role[1]} user
-              </button>  }
+              </button>  :  '' }
             </div>
 
             {/* modal   */}
