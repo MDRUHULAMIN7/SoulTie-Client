@@ -15,7 +15,7 @@ const SignUp = () => {
   } = useForm();
   const [photo,setPhoto]=useState('')
   const axiosPublic = UseAxiosPublic();
-  const { createUser,updateuserprofile} =UseAuth()
+  const { createUser,updateuserprofile,logout} =UseAuth()
   const navigate = useNavigate()
   const image_host_key = import.meta.env.VITE_IMAGE_API;
   const image_host_api = `https://api.imgbb.com/1/upload?key=${image_host_key}`;
@@ -41,7 +41,8 @@ const SignUp = () => {
        updateuserprofile(name,photo)
        .then(result=>{
         console.log(result);
-        
+        reset()
+        refetch()
 
 
        })
@@ -61,14 +62,15 @@ const SignUp = () => {
           Swal.fire({
             position: "top-center",
             icon: "success",
-            title: "SignUp Successfully",
+            title: "SignUp Successfully Login Now",
             showConfirmButton: false,
             timer: 2000
           });
         
-          reset()
-          navigate('/')
+          logout()
+          navigate('/login')
           refetch()
+          reset()
         }
        })
     })

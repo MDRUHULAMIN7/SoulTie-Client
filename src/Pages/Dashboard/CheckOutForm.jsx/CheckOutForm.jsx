@@ -98,6 +98,7 @@ console.log(fulldata);
       biodataMobile:fulldata?.MobileNumber,
       transactinId:paymentIntent.id,
       date: new Date(),
+      price:5,
       status:'pending',
 
     }
