@@ -27,6 +27,7 @@ const Login = () => {
         
         const email = data.email;
         const password = data.password;
+        console.log(email, password);
         signInUser(email,password)
         .then(result=>{
           if(result){
@@ -48,7 +49,7 @@ const Login = () => {
      
        
      
-        console.log(email, password);
+        
     
         
     
@@ -137,9 +138,7 @@ const Login = () => {
             required
             {...register("password", {
               required: true,
-              minLength: 6,
-              maxLength: 12,
-              pattern: /([A-Z][a-z][0-9])/,
+             
             })}
             id="password"
             placeholder="Password"
@@ -150,22 +149,8 @@ const Login = () => {
               Password is required
             </span>
           )}
-          {errors.password?.type === "minLength" && (
-            <span className="text-red-600  bg-slate-200 p-2">
-              Password is must 6 character
-            </span>
-          )}
-
-          {errors.password?.type === "maxLength" && (
-            <span className="text-red-600  bg-slate-200 p-2">
-              Password is must under 12 character
-            </span>
-          )}
-          {errors.password?.type === "pattern" && (
-            <span className="text-red-600  bg-slate-200 p-2">
-              Password is invalid
-            </span>
-          )}
+         
+        
         </div>
 
         <input

@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import UseAuth from "../../../Hooks/UseAuth";
 import UseAxiosPublic from "../../../Hooks/UseAxiosPublic";
 import Heading from "../Sidebar/Heading";
+import Swal from "sweetalert2";
 
 
 const MyContactRequest = () => {
@@ -9,7 +10,7 @@ const MyContactRequest = () => {
     const {user}=UseAuth();
     const axiosPublic = UseAxiosPublic();
 
-    const {data:onedata}=useQuery({
+    const {data:onedata,    refetch}=useQuery({
         queryKey:['onedata'],
         enabled:!!user?.email,
         queryFn:async()=>{
@@ -24,8 +25,34 @@ const MyContactRequest = () => {
     console.log(mydata);
   
 
-    const handledelete=(id)=>{
-        console.log(id);
+    const handledelete=async(id)=>{
+
+      Swal.fire({
+        title: "Are you sure?",
+        text: "Are sure to delete a approved contact request",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then( async(result) => {
+        if (result.isConfirmed) {
+          const res =await axiosPublic.delete(`/payment-delete/${id}`)
+          console.log(res.data);
+          if(res.data.deletedCount > 0){
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your contact Request Deleted",
+              icon: "success"
+            });
+            refetch()
+          }
+       
+        }
+      });
+ 
+
+     
     }
     return (
         <div>
