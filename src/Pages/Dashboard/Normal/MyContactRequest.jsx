@@ -21,15 +21,7 @@ const MyContactRequest = () => {
     const mydata=onedata?.filter((datas)=>datas.status !== "pending")
     // const biodataId=mydata?.biodataId;
 
-    const {data:fulldata}=useQuery({
-        queryKey:['fulldata'],
-        enabled:!!user?.email,
-        queryFn:async()=>{
-            const res = await axiosPublic.get(`/reqbiodatas-paument`,{biodataId:mydata?.biodataId})
-            return res.data
-        }
-    })
-    console.log(fulldata);
+    console.log(mydata);
   
 
     const handledelete=(id)=>{
@@ -50,6 +42,7 @@ const MyContactRequest = () => {
             <tr>
               <th>Name</th>
               <th>Email</th>
+              <th>MobileNumber</th>
               <th>BiodataId</th>
               <th>Status</th>
               <th>Action</th>
@@ -58,8 +51,9 @@ const MyContactRequest = () => {
           <tbody>
             {mydata?.map((data) => (
               <tr key={data._id} className="bg-rose-50 mt-2">
-                <th>{data?.name}</th>
-                <td>{data?.email}</td>
+                <th>{data?.biodtaName}</th>
+                <td>{data?.biodataEmail}</td>
+                <td>{data?.biodataMobile}</td>
                 <td>{data?.biodataId}</td>
                 <td className="">
                   {" "}
@@ -74,19 +68,15 @@ const MyContactRequest = () => {
                   </p>{" "}
                 </td>
                 <td>
-                  {" "}
-                  {data?.status === "pending" ? (
+                 
+                 
                     <button
                       onClick={() => handledelete(data?._id)}
                       className="bg-green-500 p-2 w-fit  px-3 py-2 txt-lg rounded-xl"
                     >
-                      Approve
+                     Delete
                     </button>
-                  ) : (
-                    <p className="bg-red-500 p-2 w-fit  px-3 py-2 txt-lg rounded-xl">
-                      Approved
-                    </p>
-                  )}
+                 
                 </td>
                 <hr />
               </tr>
