@@ -4,6 +4,7 @@ import UseAuth from "../../../Hooks/UseAuth";
 import UseAxiosPublic from "../../../Hooks/UseAxiosPublic";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 
 const CheckOutForm = ({biodataId}) => {
@@ -25,6 +26,16 @@ const CheckOutForm = ({biodataId}) => {
       setTransId('')
     })
   },[axiosPublic])
+  console.log(biodataId);
+  const {data:fulldata}=useQuery({
+    queryKey:['fulldata'],
+    enabled:!!user?.email,
+    queryFn:async()=>{
+        const res = await axiosPublic.get(`/reqbiodatas-paument/${biodataId}`)
+        return res.data
+    }
+})
+console.log(fulldata);
 
   const handleSubmit = async (event) => {
     // Block native form submission.
@@ -82,6 +93,8 @@ const CheckOutForm = ({biodataId}) => {
       email:user?.email,
       name:user?.displayName,
       biodataId:biodataId,
+      biodtaName:fulldata?.name,
+      biodataEmail:fulldata?.ContactEmail,
       transactinId:paymentIntent.id,
       date: new Date(),
       status:'pending',
