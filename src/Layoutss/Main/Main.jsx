@@ -1,6 +1,7 @@
 
 import { Outlet } from "react-router-dom";
 import MyNavbar from "../../Components/Shareds/Navbar/MyNavbar";
+import Footer from "../../Pages/Dashboard/Sidebar/Footer";
 
 
 
@@ -15,7 +16,7 @@ const Main = () => {
             
           <MyNavbar></MyNavbar>
             <Outlet></Outlet>
-            <h1>by</h1>
+            <Footer></Footer>
             
         </div>
     );

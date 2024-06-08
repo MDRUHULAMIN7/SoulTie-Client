@@ -31,8 +31,10 @@ const MyNavbar = () => {
  }
 
     return (
-        <div className='bg-rose-50 '>
-            <div className="h-16  flex justify-between items-center px-4 py-2">
+        <div className=' bg-rose-100'>
+
+         
+            <div className="h-16   flex justify-between items-center px-4 py-2">
 
                 <div className=''>
                 <div className=" flex items-center text-2xl font-serif text-black gap-2"> <img className="h-10" src={logo} alt="" /> SoulTie</div>

@@ -13,7 +13,7 @@ import { FaConnectdevelop, FaEdit } from 'react-icons/fa'
 import {  MdViewList } from 'react-icons/md'
 import { BiSolidContact } from 'react-icons/bi'
 import { LuFileHeart } from 'react-icons/lu'
-
+import img from "../../../images/nnnn.png"
 
 const Sidebar = () => {
   const { logout } = UseAuth()
@@ -113,6 +113,8 @@ console.log(role);
             isPending ? 'text-black hover:bg-slate-200 ' : isActive ? 'text-green-500  underline' :'text-black hover:bg-slate-200' } to={"/dashboard/mycontactrequest"}> <p className='flex items-center gap-2'><span><BiSolidContact></BiSolidContact></span> <span>My ContactRequest</span></p> </NavLink>
                   <NavLink className={({isActive,isPending})=>
             isPending ? 'text-black hover:bg-slate-200 ' : isActive ? 'text-green-500  underline' :'text-black hover:bg-slate-200' } to={"/dashboard/favouritebiodata"}> <p className='flex items-center gap-2'><span><LuFileHeart></LuFileHeart></span> <span>Favourites Biodata</span></p> </NavLink>
+                  <NavLink className={({isActive,isPending})=>
+            isPending ? 'text-black hover:bg-slate-200 ' : isActive ? 'text-green-500  underline' :'text-black hover:bg-slate-200' } to={"/dashboard/gotmarried"}> <p className='flex items-center gap-2'><span><img className='h-10' src={img} alt="" /></span> <span>Got Married</span></p> </NavLink>
                 </div>
         }
           

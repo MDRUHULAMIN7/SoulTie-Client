@@ -62,7 +62,7 @@ const PremiumMember = () => {
           </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {
-                  reqdata?.map(data=> <BiodataCard key={data?._id} data={data}></BiodataCard>)
+                  reqdata?.slice(0,6)?.map(data=> <BiodataCard key={data?._id} data={data}></BiodataCard>)
                 } 
             </div>
         </div>

@@ -11,7 +11,7 @@ import { IoMdWoman } from "react-icons/io";
 import { ImUserCheck } from "react-icons/im";
 
 
-const ProggessCXounter = () => {
+const ProggessCXounter = ({data}) => {
     const { user } = UseAuth();
     const axiosPublic = UseAxiosPublic();
   
@@ -77,7 +77,7 @@ const ProggessCXounter = () => {
          <div className="flex justify-center items-center">
         
          <div className="border-y border-r border-rose-400 p-4">
-         <h1 className="flex gap-2 text-2xl font-semibold text-rose-500">  <h1 className="border-2 px-2 flex items-center rounded-md border-black"><FaRegHeart /></h1><h1 className="text-4xl">{10}+</h1></h1> <h1 className="mt-2 ml-12 text-lg text-rose-400">Couple Pared</h1>
+         <h1 className="flex gap-2 text-2xl font-semibold text-rose-500">  <h1 className="border-2 px-2 flex items-center rounded-md border-black"><FaRegHeart /></h1><h1 className="text-4xl">{data?.length}+</h1></h1> <h1 className="mt-2 ml-12 text-lg text-rose-400">Couple Pared</h1>
            </div>
          <div className="border-y border-r border-rose-400 p-4">
          <h1 className="flex gap-2 text-2xl font-semibold text-rose-500">  <h1 className="border-2 px-2 flex items-center rounded-md border-black"><FaUsers/></h1><h1 className="text-4xl">{stats.biodata}+</h1></h1> <h1 className="mt-2 ml-12 text-lg text-rose-400">register biodatas</h1>

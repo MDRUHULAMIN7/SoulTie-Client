@@ -18,6 +18,7 @@ import AdminRoute from "./AdminRoute";
 import Biodatas from "../Pages/Biodatas/Biodatas";
 import DetailBiodata from "../Pages/Biodatas/DetailBiodata";
 import Payment from "../Pages/Dashboard/Payment/Payment";
+import GotMarried from "../Pages/Dashboard/Normal/GotMarried";
 
 
 export const router = createBrowserRouter([
@@ -80,6 +81,10 @@ export const router = createBrowserRouter([
             {
                 path:'/dashboard/editbiodata',
                 element:<PrivateRoute><EditBiodata></EditBiodata></PrivateRoute>
+            },
+            {
+                path:'/dashboard/gotmarried',
+                element:<PrivateRoute><GotMarried></GotMarried></PrivateRoute>
             },
             {
                 path:"/dashboard/payment/:biodataId",
