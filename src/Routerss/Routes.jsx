@@ -19,6 +19,7 @@ import Biodatas from "../Pages/Biodatas/Biodatas";
 import DetailBiodata from "../Pages/Biodatas/DetailBiodata";
 import Payment from "../Pages/Dashboard/Payment/Payment";
 import GotMarried from "../Pages/Dashboard/Normal/GotMarried";
+import SeeSuccess from "../Pages/Dashboard/Admin/SeeSuccess";
 
 
 export const router = createBrowserRouter([
@@ -74,6 +75,10 @@ export const router = createBrowserRouter([
             {
                 path:'/dashboard/approvedcontactrequest',
                 element:<PrivateRoute><AdminRoute><ApprovedContactRequest></ApprovedContactRequest></AdminRoute></PrivateRoute>
+            },
+            {
+                path:'/dashboard/successstory',
+                element:<PrivateRoute><AdminRoute><SeeSuccess></SeeSuccess></AdminRoute></PrivateRoute>
             },
 
             // normal users routes

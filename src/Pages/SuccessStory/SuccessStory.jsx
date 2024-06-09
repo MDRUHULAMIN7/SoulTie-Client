@@ -3,11 +3,12 @@ import bg from "../../images/flower.png"
 import Heading from "../Dashboard/Sidebar/Heading";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
-import 'swiper/css/pagination';
-import { Pagination } from 'swiper/modules';
+
+import 'swiper/css/navigation';
+
 
 import { Rating } from '@smastrom/react-rating'
-
+import {  Parallax,Navigation} from 'swiper/modules';
 import '@smastrom/react-rating/style.css'
 
 const SuccessStory = ({data}) => {
@@ -15,55 +16,63 @@ const SuccessStory = ({data}) => {
     console.log(data);
     return (
         <div>
-            <div className="mt-20 mb-10  bg-no-repeat hero bg-fixed bg-cover container" style={{
+      
+            <div className="mt-10 mb-10  bg-no-repeat hero bg-fixed h-screen bg-cover " style={{
             backgroundImage: `url(${bg})`,
           }}>
            <div className="bg-opacity-60 hero-overlay " >
-           <div className="pt-24 text-center"><Heading heading={"Success Story"} subheading={"---Check it out---"}></Heading></div>
-<div className="lg:flex  gap-8 w-9/12 h-96 justify-center items-center  mx-auto">
-    <div className="lg:w-1/3 w-full">
-        <img className="rounded-xl" src={bg} alt="" />
-    </div>
-    <div className="lg:w-2/3 w-full space-y-3 text-white">
-       {/* swiper */}
-       <Swiper
-        slidesPerView={3}
-        spaceBetween={30}
-        centeredSlides={true}
-       
-        modules={[Pagination]}
-        className="mySwiper mb-4"
-      >
-       
-
-            {data?.map(data=>  <SwiperSlide className="m-2" key={data._id}>
-                <div className="w-64 rounded-xl">
-                <div className="bg-no-repeat w-full   bg-cover  rounded-xl h-96 hover:text-black" style={{
-            backgroundImage: `url(${data.Coupleimage})`,
-          }}> <div className="flex-col justify-end pt-72 items-end  mx-auto hover:hero-overlay hover:bg-opacity-65 text-center ">
-              
-              <div>
-              <p className="text-center  text-rose-400 font-semibold">{data.
-shortStory}</p>
-              </div>
-              <div className="flex justify-center   items-center">
-            <h1 className="text-xl text-rose-400">Rating</h1>  <Rating className="text-center my-3 ml-2" style={{ maxWidth: 150 }} value={data.Ratings}  />
-              </div>
-            
+           <Heading heading={"Success Story"} subheading={"---Check it out---"}></Heading>
+           <div className="pt-8 text-center"></div>
+<div className=" justify-center items-center  mx-auto">
   
-          </div>
-       
-                </div>
-                </div>
-               
-                
-                
-                </SwiperSlide>)}
-       
+    <div className=" w-full  text-white">
+ 
+
     
+     
+    <Swiper
+        style={{
+          '--swiper-navigation-color': '#fff',
+          '--swiper-pagination-color': '#fff',
+        }}
+        speed={600}
+        parallax={true}
+        pagination={{
+          clickable: true,
+        }}
+        navigation={true}
+        modules={[Parallax,  Navigation]}
+        className="mySwiper sm:w-[70vh] md:w-[95vh]"
+      >
+        <div
+          slot="container-start"
+          className="parallax-bg "
+          style={{
+            'background-image':
+            'url(https://i.ibb.co/nDZ3zvK/download-3.jpg)',
+          }}
+          data-swiper-parallax="-23%"
+        ></div>
+       { data.map( data=> <SwiperSlide key={data._id}>
+          
+          <div className="w-96 rounded-md shadow-md bg-rose-50  text-gray-800">
+    <img src={data.Coupleimage} alt="" className="object-cover object-center w-full rounded-t-md h-96  dark:bg-gray-500" />
+    <div className="flex flex-col justify-between p-6 ">
+      <div className="space-y-2">
+          <div className="flex justify-center   items-center">
+              <h1 className="text-xl text-rose-400">Rating</h1>  <Rating className="text-center my-3 ml-2" style={{ maxWidth: 150 }} value={data.Ratings}  />
+                </div>
+      </div>
+      <p className="text-center">{data.shortStory}</p>
+          
+    </div>
+  </div>
+          </SwiperSlide> )}
       </Swiper>
 
        {/*  */}
+
+
     </div>
 </div>
            </div>

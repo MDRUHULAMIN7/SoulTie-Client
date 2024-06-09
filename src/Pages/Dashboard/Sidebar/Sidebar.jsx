@@ -9,7 +9,7 @@ import UserRole from '../../../Hooks/UserRole'
 import { FaHouseChimney, FaUsersGear } from 'react-icons/fa6'
 import { BsPersonCircle } from 'react-icons/bs'
 import { FcApproval } from 'react-icons/fc'
-import { FaConnectdevelop, FaEdit } from 'react-icons/fa'
+import { FaConnectdevelop, FaEdit, FaRegHeart } from 'react-icons/fa'
 import {  MdViewList } from 'react-icons/md'
 import { BiSolidContact } from 'react-icons/bi'
 import { LuFileHeart } from 'react-icons/lu'
@@ -99,6 +99,10 @@ console.log(role);
       <NavLink className={({isActive,isPending})=>
             isPending ? 'text-black hover:bg-slate-200 mt-2' : isActive ? 'text-green-500 mt-2  underline' :  'mt-2 text-black hover:bg-slate-200' } to={"/dashboard/approvedcontactrequest"}> <p className='flex items-center gap-2'><span><FaConnectdevelop></FaConnectdevelop></span> <span className='flex flex-col items-center'><span>Approved</span> <span>ContactRequest</span>
       </span></p> </NavLink>
+
+      <NavLink className={({isActive,isPending})=>
+            isPending ? 'text-black hover:bg-slate-200 mt-2' : isActive ? 'text-green-500 mt-2  underline' :  'mt-2 text-black hover:bg-slate-200' } to={"/dashboard/successstory"}> <p className='flex items-center gap-2'><span><FaRegHeart /></span> <span>SuccessStory</span>
+     </p> </NavLink>
             
             
              </div> :
