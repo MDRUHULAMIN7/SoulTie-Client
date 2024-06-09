@@ -49,9 +49,9 @@ const MyNavbar = () => {
      <NavLink className={({isActive,isPending})=>
         isPending ? 'text-black ' : isActive ? 'text-green-500  underline' :'text-black' } to={"/biodatas"}>Biodatas</NavLink>
      <NavLink className={({isActive,isPending})=>
-        isPending ? 'text-black ' : isActive ? 'text-green-500  underline' :'text-black' } to={"/aboutus"}>About Us</NavLink>
+        isPending ? 'text-black ' : isActive ? 'text-green-500  underline' :'text-black' } to={"/"}>About Us</NavLink>
      <NavLink className={({isActive,isPending})=>
-        isPending ? 'text-black ' : isActive ? 'text-green-500  underline' :'text-black' } to={"/contactus"}>Contact Us</NavLink>
+        isPending ? 'text-black ' : isActive ? 'text-green-500  underline' :'text-black' } to={"/"}>Contact Us</NavLink>
           
     </ul>
                 </div>
