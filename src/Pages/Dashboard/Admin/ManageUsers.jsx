@@ -10,7 +10,7 @@ const ManageUsers = () => {
   const axiosPublic = UseAxiosPublic();
   const { user, loading } = UseAuth();
 
-  const { data: users } = useQuery({
+  const { refetch,data: users } = useQuery({
     queryKey: ["roll", user?.email],
     enabled: !!user && !loading,
     queryFn: async () => {
@@ -37,12 +37,15 @@ const ManageUsers = () => {
         console.log(res);
         console.log(id);
         if (res.data.modifiedCount > 0) {
+          refetch()
           Swal.fire({
             title: " Successfull",
             text: "The user is also admin now",
             icon: "success",
           });
+          
         } else {
+          refetch()
           Swal.fire({
             title: "Requested Failed",
             text: "Something wrong!",

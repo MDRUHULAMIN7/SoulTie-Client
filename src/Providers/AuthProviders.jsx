@@ -27,12 +27,34 @@ const createUser=(email,password)=>{
     setLoading(true)
   return  createUserWithEmailAndPassword(auth,email,password)
 }
-const updateuserprofile=(name,photo)=>{
- return   updateProfile(auth.currentUser, {
-        displayName: name, photoURL: photo
-      })
+// const updateuserprofile=(name,photo)=>{
+//  return   updateProfile(auth.currentUser, {
+//         displayName: name, photoURL: photo
+//       })
+// }
+const updateuserprofile =(name,photo) => {
+    setLoading(true)
+           
+         return updateProfile(auth.currentUser, {
+            displayName: name,
+            photoURL: photo,
+        })
+            .then( async() => {
+         
+                setLoading(false);
+                await auth.currentUser.reload()
+                setUser(auth.currentUser)
+            })
+            .catch((error) => {
+          
+                setLoading(false);
+            });
+    
 }
 
+const updateUser=(u)=>{
+    setUser(u)
+}
 
 const signInUser=(email,password)=>{
     setLoading(true)
@@ -76,7 +98,7 @@ useEffect(()=>{
 },[auth,axiosPublic])
     const authInfo={
         user,setUser,loading,setLoading,
-        createUser,signInUser,logout,updateuserprofile,googleSigin
+        createUser,signInUser,logout,updateuserprofile,googleSigin,updateUser
     }
 
 

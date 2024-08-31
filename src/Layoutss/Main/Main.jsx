@@ -11,7 +11,7 @@ import Footer from "../../Pages/Dashboard/Sidebar/Footer";
 
 const Main = () => {
     return (
-        <div className="mt-2 mx-1">
+        <div className="mt-2 mx-1 bg-white">
 
             
           <MyNavbar></MyNavbar>

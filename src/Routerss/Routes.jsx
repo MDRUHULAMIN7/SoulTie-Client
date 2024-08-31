@@ -20,6 +20,8 @@ import DetailBiodata from "../Pages/Biodatas/DetailBiodata";
 import Payment from "../Pages/Dashboard/Payment/Payment";
 import GotMarried from "../Pages/Dashboard/Normal/GotMarried";
 import SeeSuccess from "../Pages/Dashboard/Admin/SeeSuccess";
+import About from "../Pages/About/About";
+import Contact from "../Pages/Contact/Contact";
 
 
 export const router = createBrowserRouter([
@@ -40,6 +42,16 @@ export const router = createBrowserRouter([
         {
             path:"biodatas",
             element:<Biodatas></Biodatas>
+
+        },
+        {
+            path:"/about",
+            element:<About></About>
+
+        },
+        {
+            path:"/contact",
+            element:<Contact></Contact>
 
         },
         {

@@ -12,6 +12,7 @@ import BookingModal from "./BookingModal";
 const SeeSuccess = () => {
     const {loading}= UseAuth()
     const [isOpen,setIsopen]=useState(false)
+    const [modaldata,setModaldata]=useState([])
   const axiosPublic= UseAxiosPublic()
     const {data}=useQuery({
         queryKey:["data"],
@@ -28,9 +29,15 @@ const SeeSuccess = () => {
   if(loading){
     return <LoadingSpiner></LoadingSpiner>
   }
+  const handlemodal=(user)=>{
+    setIsopen(true)
+    setModaldata(user)
+
+  }
 
   const closeModal =()=>{
     setIsopen(false)
+    // setModaldata([])
   }
     return (
         <div>
@@ -65,14 +72,16 @@ const SeeSuccess = () => {
                   </td>
 
                   <td className="p-3 ">
-                    <button onClick={()=>setIsopen(true)} className="bg-rose-300 px-3 py-2 rounded-md">See Story</button>
-                   <BookingModal isOpen={isOpen} closeModal={closeModal} user={user}></BookingModal>
+                    <button onClick={()=>handlemodal(user)} className="bg-rose-300 px-3 py-2 rounded-md">See Story</button>
+                 
                   </td>
-        
+                  
                 </tr>
-
+                 
 
               ))}
+              <BookingModal isOpen={isOpen} closeModal={closeModal} user={modaldata}></BookingModal>
+               
             </tbody>
           </table>
 

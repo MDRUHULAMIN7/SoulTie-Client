@@ -10,6 +10,8 @@ import { Rating } from "@smastrom/react-rating";
 import { Fragment } from 'react'
 
 const BookingModal = ({ closeModal, isOpen,user}) => {
+
+  console.log(user);
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as='div' className='relative z-10' onClose={closeModal}>

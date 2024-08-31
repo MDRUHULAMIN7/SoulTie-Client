@@ -1,66 +1,86 @@
-
-import img1 from "../../images/download.png"
-import img2 from "../../images/images__1_-removebg-preview.png"
-import img3 from "../../images/images-removebg-preview.png"
-import img4 from "../../images/got.png"
+import img1 from "../../images/download.png";
+import img2 from "../../images/images__1_-removebg-preview.png";
+import img3 from "../../images/images-removebg-preview.png";
+import img4 from "../../images/got.png";
 import Heading from "../Dashboard/Sidebar/Heading";
+
 const HowitWork = () => {
-    return (
-        <div className="w-full mx-auto lg:p-6 md:p-4 rounded-lg ">  
+  return (
+    <div className="w-full mx-auto lg:p-6 md:p-4 rounded-lg">
+      {/* Heading */}
+      <Heading
+        heading={"How It Works"}
+        subheading={"Our working process is preplanned and very successful."}
+      />
 
-              <Heading heading={'How It Works'} subheading={'our working procces is preplaned and very successfull '}></Heading>
-            <div className="md:flex gap-3 space-y-3  mb-3 justify-center items-center ">
-
-                {/* first */}
-                <div className="md:w-3/5 mx-auto md:h-64 p-4 md:p-8 bg-rose-50 border-2 rounded-xl border-rose-200  flex justify-center items-center">
-                <div>
-                    <h1 className="bg-rose-100 p-2 text-black text-xl rounded-full h-12 w-12 text-center">1</h1>
-                <h1 className="md:text-3xl text-2xl font-semibold">Create Your Biodata </h1>
-                <p className="md:text-lg text-md ">create your own biodata with your authentic data about yourself and be honest</p>
-                </div>
-                <div>
-                    <img className="md:h-52" src={img1} alt="" />
-                </div>
-                </div>
-                {/* second */}
-                <div className="md:w-2/5 mx-auto md:h-64 p-4 md:p-8 bg-rose-100  rounded-xl  flex justify-center items-center">
-                <div>
-                    <h1 className="bg-rose-200 p-2 text-blacktext-xl rounded-full h-12 w-12 text-center">2</h1>
-                <h1 className="md:text-2xl lg:text-3xl text-2xl font-semibold">Find Your Partner </h1>
-                <p className="md:text-md text-md ">Find your life partner with SoulTie . we suggest you in your choise depend</p>
-                </div>
-                <div>
-                    <img className="md:h-52" src={img2} alt="" />
-                </div>
-                </div>
-        
-            </div>
-            <div className="md:flex gap-3  justify-center items-center">
-        {/* third */}
-        <div className="md:w-2/5 mx-auto md:h-64 p-4 md:p-8 bg-rose-100  rounded-xl   flex justify-center items-center">
-                <div>
-                    <h1 className="bg-rose-200 p-2 text-black text-xl rounded-full h-12 w-12 text-center">3</h1>
-                <h1 className="md:text-3xl text-2xl font-semibold">Contact with Partner </h1>
-                <p className="md:text-lg text-md ">After find your likes your heart you can contact with him or her by SoulTie after payments and also meet</p>
-                </div>
-                <div>
-                    <img className="md:h-52" src={img3} alt="" />
-                </div>
-                </div>
-                {/* four */}
-                <div className="md:w-3/5 mx-auto md:h-64 p-4 md:p-8 mt-3 md:mt-0 bg-rose-50 border-2 rounded-xl border-rose-200  flex justify-center items-center">
-                <div>
-                    <h1 className="bg-rose-100 p-2 text-black text-xl rounded-full h-12 w-12 text-center">4</h1>
-                <h1 className="md:text-3xl text-2xl font-semibold">Engagement </h1>
-                <p className="md:text-lg text-md ">After contact each other when when they likes each other they are become our success couple and for other inspirations</p>
-                </div>
-                <div>
-                    <img className="md:h-52" src={img4} alt="" />
-                </div>
-                </div>
-            </div>
+      {/* Grid Layout for Steps */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {/* Step 1 */}
+        <div className="relative md:w-auto mx-auto md:h-64 p-6 bg-gradient-to-br from-pink-50 to-rose-100 border-2 rounded-3xl border-rose-200 shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl flex justify-center items-center gap-4">
+          <div>
+            <h1 className="bg-gradient-to-br from-rose-200 to-rose-400 text-white text-xl rounded-full h-12 w-12 flex items-center justify-center mb-4">
+              1
+            </h1>
+            <h1 className="md:text-3xl text-2xl font-bold text-gray-700 mb-2">Create Your Biodata</h1>
+            <p className="md:text-lg text-gray-600">
+              Create your own biodata with authentic information about yourself and be honest.
+            </p>
+          </div>
+          <div>
+            <img className="md:h-52 transition-transform transform hover:scale-105" src={img1} alt="Step 1" />
+          </div>
         </div>
-    );
+
+        {/* Step 2 */}
+        <div className="relative md:w-auto mx-auto md:h-64 p-6 bg-gradient-to-br from-rose-50 to-pink-100 rounded-3xl shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl flex justify-center items-center gap-4">
+          <div>
+            <h1 className="bg-gradient-to-br from-pink-300 to-rose-500 text-white text-xl rounded-full h-12 w-12 flex items-center justify-center mb-4">
+              2
+            </h1>
+            <h1 className="md:text-3xl text-2xl font-bold text-gray-700 mb-2">Find Your Partner</h1>
+            <p className="md:text-lg text-gray-600">
+              Find your life partner with SoulTie. We suggest matches based on your preferences.
+            </p>
+          </div>
+          <div>
+            <img className="md:h-52 transition-transform transform hover:scale-105" src={img2} alt="Step 2" />
+          </div>
+        </div>
+
+        {/* Step 3 */}
+        <div className="relative md:w-auto mx-auto md:h-64 p-6 bg-gradient-to-br from-pink-50 to-rose-100 rounded-3xl shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl flex justify-center items-center gap-4">
+          <div>
+            <h1 className="bg-gradient-to-br from-rose-200 to-rose-400 text-white text-xl rounded-full h-12 w-12 flex items-center justify-center mb-4">
+              3
+            </h1>
+            <h1 className="md:text-3xl text-2xl font-bold text-gray-700 mb-2">Contact with Partner</h1>
+            <p className="md:text-lg text-gray-600">
+              After finding a match, contact them through SoulTie after payment and arrange a meeting.
+            </p>
+          </div>
+          <div>
+            <img className="md:h-52 transition-transform transform hover:scale-105" src={img3} alt="Step 3" />
+          </div>
+        </div>
+
+        {/* Step 4 */}
+        <div className="relative md:w-auto mx-auto md:h-64 p-6 bg-gradient-to-br from-rose-50 to-pink-100 border-2 rounded-3xl border-rose-200 shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl flex justify-center items-center gap-4">
+          <div>
+            <h1 className="bg-gradient-to-br from-pink-300 to-rose-500 text-white text-xl rounded-full h-12 w-12 flex items-center justify-center mb-4">
+              4
+            </h1>
+            <h1 className="md:text-3xl text-2xl font-bold text-gray-700 mb-2">Engagement</h1>
+            <p className="md:text-lg text-gray-600">
+              Once both parties agree, they become one of our successful couples, inspiring others.
+            </p>
+          </div>
+          <div>
+            <img className="md:h-52 transition-transform transform hover:scale-105" src={img4} alt="Step 4" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default HowitWork;

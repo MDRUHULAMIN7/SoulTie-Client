@@ -20,9 +20,9 @@ const PremiumMember = () => {
             setData(datas)
         }
 
-        if(user?.email){
+      
             loaddata()
-        }
+        
     },[axiosPublic,user?.email])
  
 

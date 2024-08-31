@@ -3,26 +3,32 @@ import UseAxiosPublic from "../../Hooks/UseAxiosPublic";
 import BiodataCard from "./BiodataCard";
 import Heading from "../Dashboard/Sidebar/Heading";
 import { useEffect, useState } from "react";
+import UseAuth from "../../Hooks/UseAuth";
+import LoadingSpiner from "../../Components/Shareds/LoadingSpiner";
+import UseAxiosSecure from "../../Hooks/UseAxiosSecure";
 
 
 
 
 
 const Biodatas = () => {
-    
 
-    const axiosPublic = UseAxiosPublic();
+  const{loading}=UseAuth()
+
+ 
+  const axiosSecure = UseAxiosSecure()
+    // const axiosPublic = UseAxiosPublic();
   const [allBiodata,setBiodata]=useState(null)
 
     const {data: aldata=[],} = useQuery({
       queryKey:['aldata'],
       queryFn: async() =>{
-      const res = await axiosPublic.get('/biodatas')
+      const res = await axiosSecure.get('/biodatas')
       return res.data
       }
         })
-        
-     
+    
+          
         // console.log(aldata[0]);
              const mapdata =aldata[0]
           
@@ -31,12 +37,15 @@ const Biodatas = () => {
                 setBiodata(mapdata )
              
             },[mapdata])
-    
+        
+            if(loading){
+              return <LoadingSpiner></LoadingSpiner>
+            }
         
         const Maledata = mapdata?.filter((maledata)=> maledata.biodataType== 'male')
         const FeMaledata = mapdata?.filter((femaledata)=> femaledata.biodataType== 'female')
    
-        console.log(Maledata);
+        // console.log(Maledata);
 const handleFemale=()=>{
 setBiodata(FeMaledata) 
 }
