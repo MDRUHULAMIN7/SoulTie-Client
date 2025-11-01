@@ -1,16 +1,15 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import UseAuth from "../../Hooks/UseAuth";
+import { useState } from "react";
 import logo from '../../images/gogle.png';
-import UseAxiosPublic from "../../Hooks/UseAxiosPublic";
 import Swal from "sweetalert2";
 
-const Login = () => {
+const Login = ({ navigate, from, axiosPublic }) => {
   const { signInUser, googleSigin } = UseAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || '/';
-  const axiosPublic = UseAxiosPublic();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
   const {
     reset,
     register,
@@ -19,32 +18,36 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
     const { email, password } = data;
     
-    signInUser(email, password)
-      .then(result => {
-        if (result) {
-          Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: "Login Successfully",
-            showConfirmButton: false,
-            timer: 1500
-          });
-          reset();
-          navigate(from, { replace: true });
-        }
-      })
-      .catch(err => {
-        Swal.fire({
-          position: "top-center",
-          icon: "error",
-          title: "Login Failed",
-          text: err.message,
-          showConfirmButton: false,
-          timer: 1500
-        });
+    try {
+      await signInUser(email, password);
+      Swal.fire({
+        position: "top-center",
+        icon: "success",
+        title: "Welcome Back to SoulTie!",
+        showConfirmButton: false,
+        timer: 1500,
+        background: '#fdf2f8',
+        color: '#be185d'
       });
+      reset();
+      navigate(from, { replace: true });
+    } catch (err) {
+      Swal.fire({
+        position: "top-center",
+        icon: "error",
+        title: "Login Failed",
+        text: "Invalid email or password",
+        showConfirmButton: false,
+        timer: 1500,
+        background: '#fdf2f8',
+        color: '#be185d'
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoogle = () => {
@@ -54,7 +57,9 @@ const Login = () => {
           name: result.user?.displayName,
           email: result.user?.email,
           roll: 'normal',
-          role: 'normal'
+          role: 'normal',
+          photo: result.user?.photoURL,
+          createdAt: new Date()
         };
         axiosPublic.post('/users', userInfo)
           .then(res => {
@@ -62,9 +67,11 @@ const Login = () => {
               Swal.fire({
                 position: "top-center",
                 icon: "success",
-                title: "Login Successfully",
+                title: "Welcome to SoulTie!",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                background: '#fdf2f8',
+                color: '#be185d'
               });
               reset();
               navigate(from, { replace: true });
@@ -78,54 +85,110 @@ const Login = () => {
           title: "Login Failed",
           text: err.message,
           showConfirmButton: false,
-          timer: 1500
+          timer: 1500,
+          background: '#fdf2f8',
+          color: '#be185d'
         });
       });
   };
 
   return (
-    <div className="flex flex-col max-w-screen-sm p-6 mx-auto mt-20 rounded-lg bg-white shadow-lg dark:bg-gray-800">
-      <div className="mb-8 text-center">
-        <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-100">Sign In</h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">Sign in to access your account</p>
-      </div>
+    <div>
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-1 text-sm">
-          <label htmlFor="email" className="block text-lg text-gray-800 dark:text-gray-100">Email</label>
-          <input
-            type="email"
-            id="email"
-            {...register("email", { required: "Email is required", minLength: { value: 6, message: "Email must be at least 6 characters" } })}
-            placeholder="Email"
-            className="w-full px-4 py-3 rounded-md border-gray-300 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-300"
-          />
+        {/* Email */}
+        <div className="space-y-2">
+          <label>
+            Email Address
+          </label>
+          <div className="relative">
+            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-rose-400 w-5 h-5" />
+            <input
+              type="email"
+              {...register("email", { 
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Invalid email address"
+                }
+              })}
+              placeholder="Enter your email"
+              className="custom-input"
+            />
+          </div>
           {errors.email && (
-            <span className="text-red-500">{errors.email.message}</span>
+            <p className="text-rose-500 text-sm font-medium">
+              {errors.email.message}
+            </p>
           )}
         </div>
-        <div className="space-y-1 text-sm">
-          <label htmlFor="password" className="block text-lg text-gray-800 dark:text-gray-100">Password</label>
-          <input
-            type="password"
-            id="password"
-            {...register("password", { required: "Password is required" })}
-            placeholder="Password"
-            className="w-full px-4 py-3 rounded-md border-gray-300 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-300"
-          />
+
+        {/* Password  */}
+        <div className="space-y-2">
+          <label >
+            Password
+          </label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-rose-400 w-5 h-5" />
+            <input
+              type={showPassword ? "text" : "password"}
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters"
+                }
+              })}
+              placeholder="Enter your password"
+              className="custom-input"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-rose-400 hover:text-rose-600 transition-colors"
+            >
+              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            </button>
+          </div>
           {errors.password && (
-            <span className="text-red-500">{errors.password.message}</span>
+            <p className="text-rose-500 text-sm font-medium">
+              {errors.password.message}
+            </p>
           )}
         </div>
-        <button type="submit" className="w-full py-3 text-lg font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-400">Sign In</button>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full py-4 px-6 bg-gradient-to-r from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-lg"
+        >
+          {isLoading ? (
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              Signing In...
+            </div>
+          ) : (
+            "Sign In"
+          )}
+        </button>
       </form>
-      <hr className="my-4 border-gray-300 dark:border-gray-600" />
-      <button onClick={handleGoogle} className="w-full flex items-center justify-center py-2 text-xl text-gray-800 bg-white rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600">
-        <img className="h-8 mr-2" src={logo} alt="Google" />
-        <span>Login with Google</span>
+
+      {/* Divider */}
+      <div className="my-6 flex items-center">
+        <div className="flex-1 border-t border-gray-300"></div>
+        <span className="px-4 text-gray-500 text-sm">Or continue with</span>
+        <div className="flex-1 border-t border-gray-300"></div>
+      </div>
+
+      {/* Google */}
+      <button 
+        onClick={handleGoogle}
+        className="w-full flex items-center justify-center gap-3 py-3 px-6 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-300 transform hover:-translate-y-0.5"
+      >
+        <img className="h-6" src={logo} alt="Google" />
+        <span className="text-gray-700 font-medium">Sign in with Google</span>
       </button>
-      <p className="mt-4 text-lg text-center text-gray-600 dark:text-gray-300">
-        Do not have an account? <Link to="/signup" className="text-blue-500 hover:underline">Sign Up</Link>
-      </p>
     </div>
   );
 };

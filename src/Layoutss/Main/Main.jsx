@@ -15,7 +15,7 @@ const Main = () => {
 
             
           <MyNavbar></MyNavbar>
-           <section className=""> <Outlet></Outlet></section>
+         <Outlet></Outlet>
             <Footer></Footer>
             
         </div>

@@ -2,7 +2,7 @@ import img from "../../../images/wedding-rings.png";
 
 const Footer = () => {
   return (
-    <div className="mt-5 mx-2">
+    <div className=" mx-2">
      <footer className="px-4 divide-y bg-rose-50 text-gray-800">
 	<div className="container flex flex-col justify-between py-10 mx-auto space-y-8 lg:flex-row lg:space-y-0">
 		<div className="lg:w-2/3 md:flex justify-between  mx-3">

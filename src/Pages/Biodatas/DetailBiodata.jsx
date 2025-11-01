@@ -22,7 +22,7 @@ const {id}=useParams()
         queryKey:['data'],
         queryFn:async()=>{
             const res = await axiosPublic.get(`/biodatas/${id}`)
-
+           console.log(res.data)
             return res.data
         }
   
@@ -33,6 +33,7 @@ const {id}=useParams()
             const res = await axiosPublic.get(`/biodatas`)
 
             return res.data[0]
+
         }
   
     })
@@ -45,17 +46,17 @@ const {id}=useParams()
         }
   
     })
-// console.log(paydata);
+console.log(paydata);
    
     const finded = paydata?.find(ids=>parseInt(ids?.biodataId) === mydata?.biodataId)
-      //  console.log(finded);
+       console.log(finded);
 const condition = role[1] ==='premium' || parseInt(finded?.biodataId) === mydata?.biodataId;
 // console.log(role[0]);
 
 console.log(condition);
   
     const filtered = alldata?.filter((datas)=>datas.biodataType === mydata?.biodataType).slice(0,3)
-    // console.log(filtered);
+    console.log(filtered);
 
     const handlemyourite=async()=>{
           

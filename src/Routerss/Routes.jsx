@@ -22,6 +22,7 @@ import GotMarried from "../Pages/Dashboard/Normal/GotMarried";
 import SeeSuccess from "../Pages/Dashboard/Admin/SeeSuccess";
 import About from "../Pages/About/About";
 import Contact from "../Pages/Contact/Contact";
+import AuthForm from "../Components/Auth/AuthForm";
 
 
 export const router = createBrowserRouter([
@@ -60,7 +61,7 @@ export const router = createBrowserRouter([
         }
         ,{
             path:'login',
-            element:<Login></Login>
+            element:<AuthForm/>
         }
 
        ] 
