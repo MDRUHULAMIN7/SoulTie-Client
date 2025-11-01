@@ -11,11 +11,11 @@ import Footer from "../../Pages/Dashboard/Sidebar/Footer";
 
 const Main = () => {
     return (
-        <div className="mt-2 mx-1 bg-white">
+        <div className=" bg-white max-w-[2000px] mx-auto">
 
             
           <MyNavbar></MyNavbar>
-            <Outlet></Outlet>
+           <section className=""> <Outlet></Outlet></section>
             <Footer></Footer>
             
         </div>

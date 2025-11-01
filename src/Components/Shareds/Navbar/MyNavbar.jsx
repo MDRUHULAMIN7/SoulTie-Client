@@ -5,50 +5,52 @@ import { IoIosArrowDropdown, IoIosArrowDropup } from 'react-icons/io';
 import UseAuth from '../../../Hooks/UseAuth';
 import logo from '../../../images/wedding-rings.png';
 
+// Placeholder avatar for users without a profile picture
+const placeholderAvatar =
+  'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+
 const MyNavbar = () => {
   const { user, logout } = UseAuth();
-
-  const handleLogout = () => {
-    logout()
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   const [toggle, setToggle] = useState(false);
   const [toggleMenu, setToggleMenu] = useState(false);
 
-  const handleToggle = () => {
-    setToggle(!toggle);
-  };
-
-  const handleToggleMenu = () => {
-    setToggleMenu(!toggleMenu);
+  const handleLogout = () => {
+    logout()
+      .then(() => console.log('Logged out'))
+      .catch((err) => console.log(err));
   };
 
   return (
-    <div className="bg-white shadow-lg fixed top-0 left-0 w-full z-50">
-      <div className="h-16 flex justify-between items-center px-4 py-2">
-        {/* Logo and Title */}
-        <div className="flex items-center gap-2 text-2xl font-serif text-rose-500">
+    <div className="backdrop-blur-md bg-white/60 shadow-md sticky top-0 w-full z-50 border-b border-rose-100">
+      <div className="h-16 flex justify-between items-center px-4 md:px-8">
+        {/* Logo */}
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-2xl font-serif text-rose-500"
+        >
           <img className="h-10" src={logo} alt="Logo" />
-          SoulTie
-        </div>
+          <span className="tracking-wide hover:scale-105 transition-all duration-300">
+            SoulTie
+          </span>
+        </Link>
 
-        {/* Desktop Navigation Links */}
+        {/* Desktop Navigation */}
         <div className="hidden md:block">
-          <ul className="flex gap-6 items-center text-xl">
+          <ul className="flex gap-6 items-center text-lg font-medium">
             {['/', '/biodatas', '/about', '/contact'].map((link, index) => (
               <NavLink
                 key={index}
                 to={link}
                 className={({ isActive }) =>
-                  isActive
-                    ? 'text-green-500 underline'
-                    : 'text-black hover:text-rose-500'
+                  `
+                  relative px-1 capitalize
+                  transition-all duration-300
+                  after:content-[''] after:absolute after:left-0 after:-bottom-[2px]
+                  after:h-[2px] after:w-0 after:bg-rose-500 after:transition-all after:duration-500 after:ease-in-out
+                  ${isActive
+                    ? 'text-rose-500 after:w-full'
+                    : 'text-black hover:text-rose-500 hover:after:w-full'}
+                  `
                 }
               >
                 {link === '/' ? 'Home' : link.slice(1).replace(/([A-Z])/g, ' $1')}
@@ -57,35 +59,39 @@ const MyNavbar = () => {
           </ul>
         </div>
 
-        {/* User Profile and Authentication */}
+        {/* User Auth + Mobile Menu */}
         <div className="flex items-center gap-4 relative">
           {user?.email ? (
             <div className="relative flex items-center">
               <button
                 className="flex items-center text-2xl text-rose-500 focus:outline-none"
-                onClick={handleToggleMenu}
+                onClick={() => setToggleMenu(!toggleMenu)}
               >
                 <img
                   className="h-10 w-10 border-2 border-rose-300 rounded-full object-cover"
-                  src={user?.photoURL}
+                  src={user?.photoURL || placeholderAvatar}
                   alt="User Profile"
                 />
-                {toggleMenu ? <IoIosArrowDropdown className="ml-2" /> : <IoIosArrowDropup className="ml-2" />}
+                {toggleMenu ? (
+                  <IoIosArrowDropdown className="ml-2 transition-transform duration-300" />
+                ) : (
+                  <IoIosArrowDropup className="ml-2 transition-transform duration-300" />
+                )}
               </button>
 
               {toggleMenu && (
-                <div className="absolute top-full right-0 mt-2 w-48 bg-rose-100 shadow-lg rounded-md z-30">
-                  <ul className="py-2 text-center">
+                <div className="absolute top-full right-0 mt-2 w-48 bg-white/80 backdrop-blur-md border border-rose-100 shadow-xl rounded-md z-30 transition-all">
+                  <ul className="py-2  font-medium text-left px-2">
                     <NavLink
                       to="/dashboard"
-                      className="block px-4 py-2 text-black hover:bg-rose-300"
+                      className="block px-4 py-2 text-black hover:bg-rose-100 rounded-md transition-colors"
                       onClick={() => setToggleMenu(false)}
                     >
                       Dashboard
                     </NavLink>
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-black hover:bg-rose-300"
+                      className="block w-full text-left  px-4 py-2 text-black hover:bg-rose-100 rounded-md transition-colors"
                     >
                       Logout
                     </button>
@@ -95,34 +101,41 @@ const MyNavbar = () => {
             </div>
           ) : (
             <Link to="/login">
-              <button className="px-3 py-2 text-xl text-rose-500 hover:bg-rose-100 rounded">
+              <button className="px-4 py-2 text-lg font-medium text-rose-500 border border-rose-300 rounded-lg hover:bg-rose-50 transition-all">
                 Sign In
               </button>
             </Link>
           )}
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Icon */}
           <button
             className="text-3xl text-rose-500 md:hidden focus:outline-none"
-            onClick={handleToggle}
+            onClick={() => setToggle(!toggle)}
           >
             <MdOutlineMenu />
           </button>
         </div>
       </div>
 
-      {/* Mobile Navigation Menu */}
+      {/* Mobile Navigation */}
       {toggle && (
-        <div className="md:hidden absolute w-44 right-2 p-4 bg-rose-100 rounded-md shadow-lg mt-2 z-30">
-          <ul className="flex flex-col gap-4 text-xl">
+        <div className="md:hidden absolute w-44 right-2 p-4 bg-white/80 backdrop-blur-md rounded-md shadow-lg mt-2 z-30 border border-rose-100">
+          <ul className="flex flex-col gap-4 text-lg font-medium ">
             {['/', '/biodatas', '/about', '/contact'].map((link, index) => (
               <NavLink
                 key={index}
                 to={link}
+                onClick={() => setToggle(false)}
                 className={({ isActive }) =>
-                  isActive
-                    ? 'text-green-500 underline'
-                    : 'text-black hover:text-rose-500'
+                  `
+                  relative px-1 capitalize
+                  transition-all duration-300
+                  after:content-[''] after:absolute after:left-0 after:-bottom-[2px]
+                  after:h-[2px] after:w-0 after:bg-rose-500 after:transition-all after:duration-500 after:ease-in-out
+                  ${isActive
+                    ? 'text-rose-500 after:w-full'
+                    : 'text-black hover:text-rose-500 hover:after:w-full'}
+                  `
                 }
               >
                 {link === '/' ? 'Home' : link.slice(1).replace(/([A-Z])/g, ' $1')}
