@@ -21,9 +21,9 @@ const MyNavbar = () => {
   };
 
   return (
-    <div className="backdrop-blur-md bg-white/60 shadow-md sticky top-0 w-full z-50 border-b border-rose-100">
+    <div className="backdrop-blur-md bg-rose-100/60 shadow-md sticky top-0 w-full z-50 border-b border-rose-100">
       <div className="h-16 flex justify-between items-center px-4 md:px-8">
-        {/* Logo */}
+   
         <Link
           to="/"
           className="flex items-center gap-2 text-2xl font-serif text-rose-500"

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import Carousel from "../../Components/Carousel/Carousel";
-// import LoadingSpiner from "../../Components/Shareds/LoadingSpiner";
+import LoadingSpiner from "../../Components/Shareds/LoadingSpiner";
 import UseAuth from "../../Hooks/UseAuth";
 import UseAxiosPublic from "../../Hooks/UseAxiosPublic";
 import HowitWork from "../HowitWork.jsx/HowitWork";
@@ -28,9 +28,9 @@ const Home = () => {
         
     })
 
-  // if(loading){
-  //   return <LoadingSpiner></LoadingSpiner>
-  // }
+  if(loading){
+    return <LoadingSpiner></LoadingSpiner>
+  }
    
     return (
         <div>
