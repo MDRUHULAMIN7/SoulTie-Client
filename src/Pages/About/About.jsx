@@ -1,80 +1,161 @@
-
-import { FaRegHeart, FaUsers } from "react-icons/fa";
+import { FaRegHeart, FaUsers, FaShieldAlt, FaAward } from "react-icons/fa";
 import Heading from "../Dashboard/Sidebar/Heading";
-import { IoMdWoman } from "react-icons/io";
-import { IoManSharp } from "react-icons/io5";
-import { MdEmail } from "react-icons/md";
-
-
-
-
+import { MdEmail, MdVerifiedUser, MdSecurity } from "react-icons/md";
+import { HiSparkles } from "react-icons/hi";
 
 const About = () => {
     return (
-        <div className="py-12 px-6 ">
-            <Heading heading={"About SoulTie"} subheading={"Connecting Hearts, Creating Futures"} />
+        <div className=" px-2 md:px-8 lg:px-16 pb-4">
+            < Heading heading={" About SoulTie"} subheading={"Connecting Hearts, Creating Futures in Bangladesh"} />
 
-            <div className="mt-10 max-w-5xl mx-auto text-gray-800">
-                <h2 className="text-4xl font-bold text-center text-white mb-8">Our Mission</h2>
-                <p className="text-xl text-center text-gray-900 mb-8 px-4">
-                    At SoulTie, we are dedicated to helping individuals find their perfect match and build meaningful relationships. Our mission is to provide a safe, trustworthy, and personalized platform where you can connect with like-minded individuals and start your journey towards a happy and fulfilling relationship.
-                </p>
+        <section className="space-y-12">
+                {/* Mission Section */}
+            <div className=" ">
+                <div className=" mx-auto">
+                    <div className="text-center mb-12">
+                        <span className="inline-block bg-rose-100 text-rose-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                            Our Mission
+                        </span>
+                        <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+                            Building Meaningful Relationships
+                        </h2>
+                        <p className="text-xl text-gray-600  mx-auto leading-relaxed">
+                            At SoulTie, we are dedicated to helping individuals find their perfect match and build meaningful relationships. 
+                            Our mission is to provide a safe, trustworthy, and personalized platform where you can connect with like-minded 
+                            individuals and start your journey towards a happy and fulfilling life together.
+                        </p>
+                    </div>
 
-                <h2 className="text-4xl font-bold text-center text-white mb-8">What We Offer</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
-                    <div className="bg-white p-8 rounded-lg shadow-xl transform transition-transform hover:scale-105">
-                        <FaRegHeart className="text-pink-600 text-5xl mb-4 mx-auto" />
-                        <h3 className="text-2xl font-semibold mb-2 text-center text-gray-800">Personalized Matches</h3>
-                        <p className="text-gray-700 text-center">
-                            Our advanced algorithms and personalized matchmaking services ensure that you connect with individuals who truly align with your values, interests, and relationship goals.
-                        </p>
-                    </div>
-                    <div className="bg-white p-8 rounded-lg shadow-xl transform transition-transform hover:scale-105">
-                        <div className="flex justify-center mb-4">
-                            <IoMdWoman className="text-pink-600 text-5xl mx-2" />
-                            <IoManSharp className="text-pink-600 text-5xl mx-2" />
-                        </div>
-                        <h3 className="text-2xl font-semibold mb-2 text-center text-gray-800">Secure and Confidential</h3>
-                        <p className="text-gray-700 text-center">
-                            We prioritize your privacy and security. Our platform is designed to protect your personal information and provide a safe environment for you to explore potential matches.
-                        </p>
-                    </div>
-                    <div className="bg-white p-8 rounded-lg shadow-xl transform transition-transform hover:scale-105">
-                        <FaUsers className="text-pink-600 text-5xl mb-4 mx-auto" />
-                        <h3 className="text-2xl font-semibold mb-2 text-center text-gray-800">Diverse Community</h3>
-                        <p className="text-gray-700 text-center">
-                            SoulTie brings together a diverse community of singles looking for genuine connections. Whether you are seeking a life partner or a meaningful relationship, you will find a wide range of profiles to explore.
-                        </p>
-                    </div>
                 </div>
+            </div>
 
-                <div className="mt-12">
-                    <h2 className="text-4xl font-bold text-center text-white mb-8">Meet the Team</h2>
-                    <div className="flex flex-col lg:flex-row gap-8 px-4">
-                        <div className="bg-white p-8 rounded-lg shadow-xl flex items-center transform transition-transform hover:scale-105">
-                            <FaUsers className="text-pink-600 text-5xl mr-4" />
-                            <div>
-                                <h3 className="text-2xl font-semibold mb-2 text-gray-800">Our Team</h3>
-                                <p className="text-gray-700">
-                                    Our dedicated team at SoulTie is passionate about fostering meaningful connections. With a mix of expertise in technology, matchmaking, and customer support, we work tirelessly to enhance your experience and ensure you find the right match.
-                                </p>
+            {/* Features Section */}
+            <div className=" ">
+                <div className=" mx-auto">
+                    <div className="text-center mb-12">
+                        <span className="inline-block bg-rose-100 text-rose-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                            What We Offer
+                        </span>
+                        <h2 className="text-4xl md:text-5xl font-bold text-gray-800">
+                            Why Choose SoulTie?
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {/* Feature 1 */}
+                        <div className="group bg-gradient-to-br from-rose-50 to-white border-2 border-rose-200 p-6 rounded-2xl shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl">
+                            <div className="bg-gradient-to-br from-rose-400 to-rose-500 w-14 h-14 rounded-full flex items-center justify-center mb-4 group-hover:rotate-12 transition-transform">
+                                <FaRegHeart className="text-white text-2xl" />
                             </div>
+                            <h3 className="text-xl font-bold mb-3 text-gray-800">Personalized Matches</h3>
+                            <p className="text-gray-600 leading-relaxed text-sm">
+                                Our advanced algorithms ensure you connect with individuals who truly align with your values and relationship goals.
+                            </p>
                         </div>
-                        <div className="bg-white p-8 rounded-lg shadow-xl flex items-center transform transition-transform hover:scale-105">
-                            <MdEmail className="text-pink-600 text-5xl mr-4" />
-                            <div>
-                                <h3 className="text-2xl font-semibold mb-2 text-gray-800">Contact Us</h3>
-                                <p className="text-gray-700">
-                                    If you have any questions or need assistance, please reach out to us. Our support team is here to help you with any inquiries or concerns you may have. You can contact us via email or through our platform.
-                                </p>
+
+                        {/* Feature 2 */}
+                        <div className="group bg-gradient-to-br from-rose-50 to-white border-2 border-rose-200 p-6 rounded-2xl shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl">
+                            <div className="bg-gradient-to-br from-rose-400 to-rose-500 w-14 h-14 rounded-full flex items-center justify-center mb-4 group-hover:rotate-12 transition-transform">
+                                <MdSecurity className="text-white text-2xl" />
                             </div>
+                            <h3 className="text-xl font-bold mb-3 text-gray-800">Secure & Confidential</h3>
+                            <p className="text-gray-600 leading-relaxed text-sm">
+                                We prioritize your privacy and security with advanced protection for your personal information.
+                            </p>
+                        </div>
+
+                        {/* Feature 3 */}
+                        <div className="group bg-gradient-to-br from-rose-50 to-white border-2 border-rose-200 p-6 rounded-2xl shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl">
+                            <div className="bg-gradient-to-br from-rose-400 to-rose-500 w-14 h-14 rounded-full flex items-center justify-center mb-4 group-hover:rotate-12 transition-transform">
+                                <MdVerifiedUser className="text-white text-2xl" />
+                            </div>
+                            <h3 className="text-xl font-bold mb-3 text-gray-800">Verified Profiles</h3>
+                            <p className="text-gray-600 leading-relaxed text-sm">
+                                Every profile is carefully verified to ensure authenticity and genuine connections.
+                            </p>
+                        </div>
+
+                        {/* Feature 4 */}
+                        <div className="group bg-gradient-to-br from-rose-50 to-white border-2 border-rose-200 p-6 rounded-2xl shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl">
+                            <div className="bg-gradient-to-br from-rose-400 to-rose-500 w-14 h-14 rounded-full flex items-center justify-center mb-4 group-hover:rotate-12 transition-transform">
+                                <HiSparkles className="text-white text-2xl" />
+                            </div>
+                            <h3 className="text-xl font-bold mb-3 text-gray-800">Smart Matching</h3>
+                            <p className="text-gray-600 leading-relaxed text-sm">
+                                Intelligent system considers age, height, weight, and preferences for perfect matches.
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Team Section */}
+            <div className="">
+                <div className=" mx-auto">
+                    <div className="text-center mb-12">
+                        <span className="inline-block bg-rose-100 text-rose-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                            Our Team
+                        </span>
+                        <h2 className="text-4xl md:text-5xl font-bold text-gray-800">
+                            Dedicated to Your Success
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                     
+                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-rose-200 transform transition-all hover:scale-105">
+                            <div className="bg-gradient-to-br from-rose-400 to-rose-500 w-14 h-14 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                                <FaUsers className="text-white text-2xl" />
+                            </div>
+                            <h3 className="text-lg font-bold mb-2 text-gray-800 text-center">Expert Team</h3>
+                            <p className="text-gray-600 text-sm leading-relaxed text-center">
+                                Passionate experts in technology and matchmaking dedicated to your success.
+                            </p>
+                        </div>
+
+                       
+                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-rose-200 transform transition-all hover:scale-105">
+                            <div className="bg-gradient-to-br from-rose-400 to-rose-500 w-14 h-14 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                                <MdEmail className="text-white text-2xl" />
+                            </div>
+                            <h3 className="text-lg font-bold mb-2 text-gray-800 text-center">24/7 Support</h3>
+                            <p className="text-gray-600 text-sm leading-relaxed text-center">
+                                Our support team is always ready to help with any questions or concerns.
+                            </p>
+                        </div>
+
+                      
+                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-rose-200 transform transition-all hover:scale-105">
+                            <div className="bg-gradient-to-br from-rose-400 to-rose-500 w-14 h-14 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                                <FaShieldAlt className="text-white text-2xl" />
+                            </div>
+                            <h3 className="text-lg font-bold mb-2 text-gray-800 text-center">Privacy First</h3>
+                            <p className="text-gray-600 text-sm leading-relaxed text-center">
+                                Your data is protected with industry-leading security measures.
+                            </p>
+                        </div>
+
+                  
+                        <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-rose-200 transform transition-all hover:scale-105">
+                            <div className="bg-gradient-to-br from-rose-400 to-rose-500 w-14 h-14 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                                <FaAward className="text-white text-2xl" />
+                            </div>
+                            <h3 className="text-lg font-bold mb-2 text-gray-800 text-center">Trusted Service</h3>
+                            <p className="text-gray-600 text-sm leading-relaxed text-center">
+                                Award-winning platform trusted by thousands across Bangladesh.
+                            </p>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        
+        </section>
+      
         </div>
     );
 };
 
 export default About;
-

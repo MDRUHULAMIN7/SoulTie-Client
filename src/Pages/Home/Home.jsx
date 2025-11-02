@@ -10,6 +10,7 @@ import SuccessStory from "../SuccessStory/SuccessStory";
 import About from "../About/About";
 import Contact from "../Contact/Contact";
 import ScrollToTopButton from "../../Components/ScrollToTopButton/ScrollToTopButton";
+import { useEffect } from "react";
 
 
 
@@ -27,6 +28,12 @@ const Home = () => {
         }
         
     })
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+useEffect(() => {
+  scrollToTop();
+}, []);
 
   if(loading){
     return <LoadingSpiner></LoadingSpiner>

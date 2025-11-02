@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import {Filter} from "lucide-react"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UseAxiosPublic from "../../Hooks/UseAxiosPublic";
 import UseAuth from "../../Hooks/UseAuth";
 import BiodataCard from "./BiodataCard";
@@ -13,10 +13,15 @@ import NoResults from "../../Components/Biodata/NoResults";
 
 
 const Biodatas = () => {
+    const scrollToTop = () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+  useEffect(() => {
+    scrollToTop();
+  }, []);
   const { loading } = UseAuth();
   const axiosPublic = UseAxiosPublic();
 
-  // Filter states
   const [filters, setFilters] = useState({
     biodataType: '',
     ageRange: '',
