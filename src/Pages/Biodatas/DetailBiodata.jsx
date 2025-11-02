@@ -7,219 +7,313 @@ import Heading from "../Dashboard/Sidebar/Heading";
 import Swal from "sweetalert2";
 import UserRole from "../../Hooks/UserRole";
 import { useState } from "react";
-
-
+import LoadingSpiner from "../../Components/Shareds/LoadingSpiner";
+import { Heart, Lock, Unlock } from "lucide-react";
 
 const DetailBiodata = () => {
-    const {user}=UseAuth()
-   const [role]=UserRole();
- const[isIpoen,SetIsOpen]=useState(false)
+  const { user } = UseAuth();
+  const [role] = UserRole();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-const axiosPublic=UseAxiosPublic()
-const {id}=useParams()
-    console.log(id);
-    const {data:mydata}=useQuery({
-        queryKey:['data'],
-        queryFn:async()=>{
-            const res = await axiosPublic.get(`/biodatas/${id}`)
-           console.log(res.data)
-            return res.data
-        }
-  
-    })
-    const {data:alldata}=useQuery({
-        queryKey:['alldata'],
-        queryFn:async()=>{
-            const res = await axiosPublic.get(`/biodatas`)
+  const axiosPublic = UseAxiosPublic();
+  const { id } = useParams();
 
-            return res.data[0]
+  // Fetch main biodata details
+  const { data: biodata, isLoading: biodataLoading } = useQuery({
+    queryKey: ['biodata', id],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/biodatas/${id}`);
+      return res.data;
+    },
+    enabled: !!id
+  });
 
-        }
-  
-    })
-    const {data:paydata}=useQuery({
-        queryKey:['paydata'],
-        queryFn:async()=>{
-            const res = await axiosPublic.get(`/payments`)
+  // Fetch similar biodatas 
+  const { data: similarResponse, isLoading: similarLoading } = useQuery({
+    queryKey: ['similar-biodatas', id],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/biodatas/${id}/similar?limit=3`);
+      return res.data;
+    },
+    enabled: !!id
+  });
 
-            return res.data
-        }
-  
-    })
-console.log(paydata);
-   
-    const finded = paydata?.find(ids=>parseInt(ids?.biodataId) === mydata?.biodataId)
-       console.log(finded);
-const condition = role[1] ==='premium' || parseInt(finded?.biodataId) === mydata?.biodataId;
-// console.log(role[0]);
+  const similarBiodatas = similarResponse?.data || [];
+  const similarityCriteria = similarResponse?.criteria;
 
-console.log(condition);
-  
-    const filtered = alldata?.filter((datas)=>datas.biodataType === mydata?.biodataType).slice(0,3)
-    console.log(filtered);
-
-    const handlemyourite=async()=>{
-          
-    const myfavouriteData={
-        Name:mydata?.name,
-        BiodataId:mydata?.biodataId,
-        ParmanentAddress:mydata?.ParmanentDivison,
-        Occupation:mydata?.Occupation,
-        useremail:user?.email
+  // Fetch payment data 
+  const { data: payments } = useQuery({
+    queryKey: ['payments'],
+    queryFn: async () => {
+      const res = await axiosPublic.get('/payments');
+      return res.data;
     }
-   try{
-    const res = await axiosPublic.post('/favourites',myfavouriteData)
-    console.log(res.data);
-      if(res.data.insertedId){
+  });
 
+  // Check if user has access to contact information
+  const hasAccessToContact = () => {
+    if (!biodata || !payments) return false;
+    if (role[1] === 'premium') return true;
+    const payment = payments.find(
+      p => parseInt(p.biodataId) === biodata.biodataId
+    );
+    return !!payment;
+  };
+
+  const hasAccess = hasAccessToContact();
+
+  // Handle add to favourites
+  const handleAddToFavourites = async () => {
+    if (!user) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please Login",
+        text: "You need to login to add favourites",
+        showConfirmButton: true
+      });
+      return;
+    }
+
+    const favouriteData = {
+      Name: biodata?.name,
+      BiodataId: biodata?.biodataId,
+      ParmanentAddress: biodata?.ParmanentDivison,
+      Occupation: biodata?.Occupation,
+      useremail: user?.email
+    };
+
+    try {
+      const res = await axiosPublic.post('/favourites', favouriteData);
+      
+      if (res.data.insertedId) {
         Swal.fire({
           position: "top-end",
           icon: "success",
-          title: "Add to Favourites Successfully",
+          title: "Added to Favourites Successfully",
           showConfirmButton: false,
           timer: 1500
         });
       }
-   }catch(err){
-    if(err.response.status){
-      Swal.fire({
-        position: "top-end",
-        icon: "error",
-        title: "Already Added to Favourites ",
-        showConfirmButton: false,
-        timer: 1500
-      });
+    } catch (err) {
+      if (err.response?.status === 403) {
+        Swal.fire({
+          position: "top-end",
+          icon: "info",
+          title: "Already Added to Favourites",
+          showConfirmButton: false,
+          timer: 1500
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to add to favourites",
+          showConfirmButton: true
+        });
+      }
     }
-   }
-  
-    }
+  };
 
-    const openModal=()=>{
-      SetIsOpen(true)
-    }
-    const closeModal=()=>{
-      SetIsOpen(false)
-    }
-   
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  if (biodataLoading) {
     return (
-        <div className=" p-6 rounded-md">
-          <Heading subheading={'you can see deatils of a biodata'} heading={'Detail Biodata'}></Heading>
-        <div className="bg-rose-100 rounded-sm p-5">
-          {/* first */}
-          <div className="md:flex  border-b-2 border-y-black pb-4  items-center ">
-            <div className="row-span-3  md:w-1/3">
-              <img
-                className=" rounded-full mx-auto w-24 lg:w-44 h-24  lg:h-44"
-                src={mydata?.photo}
-                alt=""
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
-              <div className="text-lg w-full bg-white rounded-md text-black p-2">
-                Name : {mydata?.name}
-              </div>
-              <div className="text-lg w-full bg-white rounded-md text-black p-2">
-                Biodata Type : {mydata?.biodataType}
-              </div>
-              <div className="text-lg w-full bg-white rounded-md text-black p-2">
-                BirthDate : {mydata?.birthDate?.slice(0, 10)}
-              </div>
-              <div className="text-lg w-full bg-white rounded-md text-black p-2">
-                Occupation : {mydata?.Occupation}
-              </div>
-              <div className="text-lg w-full bg-white rounded-md text-black p-2">
-                Height : {mydata?.Height}
-              </div>
-              <div className="text-lg w-full bg-white rounded-md text-black p-2">
-                Age : {mydata?.Age}
-              </div>
-            </div>
-          </div>
-  
-          {/*  */}
-  
-          <div className="mx-auto pb-4 grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3  gap-3 md:gap-5 pt-16">
-            <div className="text-lg w-full bg-white rounded-md text-black p-2">
-              ParmanentDivison : {mydata?.ParmanentDivison}
-            </div>
-            <div className="text-lg w-full bg-white rounded-md text-black p-2">
-              Weight : {mydata?.Weight}
-            </div>
-            <div className="text-lg w-full bg-white rounded-md text-black p-2">
-              PresentDivison : {mydata?.PresentDivison}
-            </div>
-            <div className="text-lg w-full bg-white rounded-md text-black p-2">
-              Race : {mydata?.Race}
-            </div>
-            <div className="text-lg w-full bg-white rounded-md text-black p-2">
-              FatherName : {mydata?.FatherName}
-            </div>
-            <div className="text-lg w-full bg-white rounded-md text-black p-2">
-              MotherName : {mydata?.MotherName}
-            </div>
-            <div className="text-lg w-full bg-white rounded-md text-black p-2">
-              ExceptedPartnerWeight : {mydata?.PartnerWeight}
-            </div>
-            <div className="text-lg w-full bg-white rounded-md text-black p-2">
-              ExceptedParnerHeight : {mydata?.PartnerHeight}
-            </div>
-            <div className="text-lg w-full bg-white rounded-md text-black p-2">
-              ExceptedPartnerAge : {mydata?.PartnerAge}
-            </div>
-          { condition  ? <><div className="text-lg w-full bg-white rounded-md text-black p-2">
-              ContactEmail : {mydata?.ContactEmail}
-            </div></> : <><div className="text-lg w-full bg-rose-200 rounded-md text-black p-2">
-            except Contact Information for Email
-            </div></>}  
-          {condition?<div className="text-lg w-full bg-white rounded-md text-black p-2">
-              MobileNumber : {mydata?.MobileNumber}
-            </div>: <div className="text-lg w-full bg-rose-200 rounded-md text-black p-2">
-            except Contact Information for MobileNumber
-            </div>}  
-            <button onClick={()=>handlemyourite(mydata)} className="text-lg w-full bg-white rounded-md text-black p-2">
-Add to MyFavourites
-            </button>
-            <div className="text-lg w-full  rounded-md text-black ">
-              { !condition ? <button
-             onClick={openModal}
-                className="bg-rose-200 p-2 w-full hover:bg-rose-300 rounded-md"
-              >
-               
-               Request Contact Information
-              </button>  :  '' }
-            </div>
+     <LoadingSpiner/>
+    );
+  }
 
-            {/* modal   */}
-   <div className={isIpoen ?"  bg-rose-50 absolute left-1/3 px-8 py-4 rounded-md w-2/5 " : "hidden"}>
-      
-      <div className=" space-y-3">
-        <h1 className="text-2xl flex justify-center  font-medium text-black">You have to Payment <span className="font-semibold mx-2 text-2xl text-rose-400">5$ </span>for Contact Request</h1> <br />
-        <h2 className="text-lg text-center mx-2">After contact request you have to wait sometime for admin approvel. When admin approve your cotact request your can see the contact information</h2>
-      </div>
-   <div className="flex justify-between items-center">
-   <button onClick={closeModal} className="btn px-4 text-lg bg-rose-100 text-black">Cancel</button>
-   <Link to={`/dashboard/payment/${mydata?.biodataId}`}  className="btn px-4 text-lg bg-rose-100 text-black">Continue</Link>
-   </div>
-
-   
-   </div>
-                
-
-{/*  */}
-          </div>
+  if (!biodata) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold text-gray-700">Biodata not found</h2>
+          <Link to="/biodatas" className="text-rose-500 hover:text-rose-600 mt-4 inline-block">
+            Return to Browse Biodatas
+          </Link>
         </div>
-
-        <Heading subheading={'see some similar biodata here...'} heading={'Smimilar Biodata'}></Heading>
-        <div className="grid grid-cols-1 mt-10 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {
-                      filtered?.map(data=> <BiodataCard key={data?._id} data={data}></BiodataCard>)
-                    } 
-                </div>
-
-            <Link className="my-5 flex justify-center" to={'/biodatas'}> <button className="text-2xl text-rose-400 font-mono text-centre mt-5">Show more... </button></Link>   
-
       </div>
     );
+  }
+
+  return (
+    <div className="container mx-auto p-6">
+      <Heading 
+        subheading="View detailed information about this biodata" 
+        heading="Biodata Details"
+      />
+
+      <div className="bg-gradient-to-br from-rose-50 to-rose-100 rounded-lg shadow-lg p-6 md:p-8 mb-12">
+
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-6 pb-6 border-b-2 border-rose-300">
+          <div className="flex-shrink-0">
+            <img
+              className="rounded-full w-32 h-32 lg:w-44 lg:h-44 object-cover border-4 border-white shadow-lg"
+              src={biodata?.photo}
+              alt={biodata?.name}
+            />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
+            <InfoCard label="Name" value={biodata?.name} />
+            <InfoCard label="Biodata Type" value={biodata?.biodataType} />
+            <InfoCard label="Birth Date" value={biodata?.birthDate?.slice(0, 10)} />
+            <InfoCard label="Occupation" value={biodata?.Occupation} />
+            <InfoCard label="Height" value={biodata?.Height} />
+            <InfoCard label="Age" value={`${biodata?.Age} years`} />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-8">
+          <InfoCard label="Permanent Division" value={biodata?.ParmanentDivison} />
+          <InfoCard label="Weight" value={biodata?.Weight} />
+          <InfoCard label="Present Division" value={biodata?.PresentDivison} />
+          <InfoCard label="Race" value={biodata?.Race} />
+          <InfoCard label="Father's Name" value={biodata?.FatherName} />
+          <InfoCard label="Mother's Name" value={biodata?.MotherName} />
+          <InfoCard label="Expected Partner Weight" value={biodata?.PartnerWeight} />
+          <InfoCard label="Expected Partner Height" value={biodata?.PartnerHeight} />
+          <InfoCard label="Expected Partner Age" value={`${biodata?.PartnerAge} years`} />
+          
+          {/* Contact Information Conditional Display */}
+          {hasAccess ? (
+            <>
+              <InfoCard label="Contact Email" value={biodata?.ContactEmail} highlighted />
+              <InfoCard label="Mobile Number" value={biodata?.MobileNumber} highlighted />
+            </>
+          ) : (
+            <>
+              <div className="bg-rose-200 rounded-lg p-4 border-2 border-rose-300">
+                <p className="text-sm font-medium text-rose-800 flex items-center gap-x-2 "><Lock size={18}/> Contact Email</p>
+                <p className="text-xs text-rose-600 mt-1">Premium Access Required</p>
+              </div>
+              <div className="bg-rose-200 rounded-lg p-4 border-2 border-rose-300">
+                <p className="text-sm font-medium text-rose-800 flex items-center gap-x-2"><Lock size={18}/> Mobile Number</p>
+                <p className="text-xs text-rose-600 mt-1">Premium Access Required</p>
+              </div>
+            </>
+          )}
+          <button
+            onClick={handleAddToFavourites}
+            className="bg-white flex items-center gap-x-2 hover:bg-rose-50 text-rose-600 font-semibold rounded-lg p-4 transition-all duration-200 shadow-md hover:shadow-lg border-2 border-rose-300 hover:border-rose-400"
+          >
+            <Heart size={18}/> Add to Favourites
+          </button>
+
+          {!hasAccess && (
+            <button
+              onClick={openModal}
+              className="bg-gradient-to-r flex items-center gap-x-2 from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 text-white font-semibold rounded-lg p-4 transition-all duration-200 shadow-md hover:shadow-lg col-span-1 md:col-span-2"
+            >
+              <Unlock size={18}/> Request Contact Information
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Payment Request Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-2xl max-w-md w-full p-8 transform transition-all">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+              Contact Information Request
+            </h2>
+            
+            <div className="bg-rose-50 border-2 border-rose-300 rounded-lg p-6 mb-6">
+              <p className="text-center mb-2">
+                <span className="text-3xl font-bold text-rose-500">$5</span>
+              </p>
+              <p className="text-gray-700 text-sm text-center leading-relaxed">
+                After payment, you'll need to wait for admin approval. Once approved, 
+                you'll be able to view the contact information.
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={closeModal}
+                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+              >
+                Cancel
+              </button>
+              <Link
+                to={`/dashboard/payment/${biodata?.biodataId}`}
+                className="flex-1 bg-gradient-to-r from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 text-center"
+              >
+                Continue
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Similar Biodatas Section */}
+      <div className="mt-12">
+        <Heading 
+          subheading="Discover biodatas with similar age, height, and weight" 
+          heading="Similar Biodatas"
+        />
+
+        {similarityCriteria && (
+          <div className="bg-rose-50 border-2 border-rose-300 rounded-lg p-4 mb-6">
+            <p className="text-sm text-gray-700 text-center">
+              <span className="font-semibold text-rose-600">Matching Criteria:</span> {similarityCriteria.biodataType} • 
+              Age: {similarityCriteria.ageRange} • 
+              Height: {similarityCriteria.heightRange} • 
+              Weight: {similarityCriteria.weightRange}
+            </p>
+          </div>
+        )}
+        
+        {similarLoading ? (
+         <LoadingSpiner/>
+        ) : similarBiodatas && similarBiodatas.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+            {similarBiodatas.map(data => (
+              <BiodataCard key={data._id} data={data} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <div className="bg-rose-100 border-2 border-rose-300 rounded-lg p-6 max-w-md mx-auto">
+              <p className="text-rose-700 font-medium mb-2">No similar biodatas found</p>
+              <p className="text-sm text-gray-600">
+                Try browsing all biodatas to find more matches
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className="flex justify-center mt-8">
+          <Link to="/biodatas">
+            <button className="text-xl font-semibold text-rose-500 hover:text-rose-600 transition-colors duration-200 flex items-center gap-2">
+              Browse All Biodatas 
+              <span className="text-2xl">→</span>
+            </button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// InfoCard Component
+const InfoCard = ({ label, value, highlighted = false }) => {
+  return (
+    <div className={`rounded-lg p-4 transition-all duration-200 ${
+      highlighted 
+        ? 'bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300' 
+        : 'bg-white shadow-sm hover:shadow-md border border-rose-200'
+    }`}>
+      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+        {label}
+      </p>
+      <p className={`text-base font-medium ${
+        highlighted ? 'text-green-800' : 'text-gray-800'
+      }`}>
+        {value || 'N/A'}
+      </p>
+    </div>
+  );
 };
 
 export default DetailBiodata;

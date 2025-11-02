@@ -8,12 +8,13 @@ import { useQuery } from "@tanstack/react-query";
 
 
 const CheckOutForm = ({biodataId}) => {
+
     const stripe = useStripe();
    const axiosPublic= UseAxiosPublic()
   const elements = useElements();
   const {user}=UseAuth()
   const[errors,serError]=useState(null)
-  const[   clientSecret,setclientSecret]=useState('')
+  const[ clientSecret,setclientSecret]=useState('')
   const [transId,setTransId]=useState('')
   const navigate = useNavigate()
   // const price =5;
@@ -147,7 +148,7 @@ console.log(fulldata);
           },
         }} className="text-red-400 rounded-xl bg-white p-4"
       />
-      <button  className="px-5 text-center mt-10  py-2 text-xl rounded-lg bg-rose-100" type="submit" disabled={!stripe || !   clientSecret}>
+      <button  className="px-5 text-center mt-10  py-2 text-xl rounded-lg bg-rose-100" type="submit" disabled={!stripe || !clientSecret}>
         Pay
       </button>  <p className=" mt-3 text-center text-red-500">{errors}</p>
 
