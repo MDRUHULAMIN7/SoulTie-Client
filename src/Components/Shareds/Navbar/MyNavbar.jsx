@@ -1,29 +1,31 @@
-import { Link, NavLink } from 'react-router-dom';
-import { useState } from 'react';
-import { MdOutlineMenu } from 'react-icons/md';
-import { IoIosArrowDropdown, IoIosArrowDropup } from 'react-icons/io';
-import UseAuth from '../../../Hooks/UseAuth';
-import logo from '../../../images/wedding-rings.png';
+import { Link, NavLink } from "react-router-dom";
+import { useState } from "react";
+import { MdOutlineMenu } from "react-icons/md";
+import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
+import UseAuth from "../../../Hooks/UseAuth";
+import logo from "../../../images/wedding-rings.png";
+import UserRole from "../../../Hooks/UserRole";
+import { BsPersonCircle } from "react-icons/bs";
 
 // Placeholder avatar for users without a profile picture
 const placeholderAvatar =
-  'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+  "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
 const MyNavbar = () => {
   const { user, logout } = UseAuth();
   const [toggle, setToggle] = useState(false);
   const [toggleMenu, setToggleMenu] = useState(false);
+  const [role] = UserRole();
 
   const handleLogout = () => {
     logout()
-      .then(() => console.log('Logged out'))
+      .then(() => console.log("Logged out"))
       .catch((err) => console.log(err));
   };
 
   return (
     <div className="backdrop-blur-md bg-rose-100/60 shadow-md sticky top-0 w-full z-50 border-b border-rose-100">
       <div className="h-16 flex justify-between items-center px-4 md:px-8">
-   
         <Link
           to="/"
           className="flex items-center gap-2 text-2xl font-serif text-rose-500"
@@ -37,7 +39,7 @@ const MyNavbar = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:block">
           <ul className="flex gap-6 items-center text-lg font-medium">
-            {['/', '/biodatas', '/about', '/contact'].map((link, index) => (
+            {["/", "/biodatas", "/about", "/contact"].map((link, index) => (
               <NavLink
                 key={index}
                 to={link}
@@ -47,19 +49,23 @@ const MyNavbar = () => {
                   transition-all duration-300
                   after:content-[''] after:absolute after:left-0 after:-bottom-[2px]
                   after:h-[2px] after:w-0 after:bg-rose-500 after:transition-all after:duration-500 after:ease-in-out
-                  ${isActive
-                    ? 'text-rose-500 after:w-full'
-                    : 'text-black hover:text-rose-500 hover:after:w-full'}
+                  ${
+                    isActive
+                      ? "text-rose-500 after:w-full"
+                      : "text-black hover:text-rose-500 hover:after:w-full"
+                  }
                   `
                 }
               >
-                {link === '/' ? 'Home' : link.slice(1).replace(/([A-Z])/g, ' $1')}
+                {link === "/"
+                  ? "Home"
+                  : link.slice(1).replace(/([A-Z])/g, " $1")}
               </NavLink>
             ))}
           </ul>
         </div>
 
-        {/* User Auth + Mobile Menu */}
+        {/* Mobile Menu */}
         <div className="flex items-center gap-4 relative">
           {user?.email ? (
             <div className="relative flex items-center">
@@ -82,13 +88,32 @@ const MyNavbar = () => {
               {toggleMenu && (
                 <div className="absolute top-full right-0 mt-2 w-48 bg-white/80 backdrop-blur-md border border-rose-100 shadow-xl rounded-md z-30 transition-all">
                   <ul className="py-2  font-medium text-left px-2">
-                    <NavLink
-                      to="/dashboard"
-                      className="block px-4 py-2 text-black hover:bg-rose-100 rounded-md transition-colors"
-                      onClick={() => setToggleMenu(false)}
-                    >
-                      Dashboard
-                    </NavLink>
+                    {role[0] === "admin" ? (
+                      <NavLink
+                        to="/dashboard/adminprofile"
+                        end
+                        className={({ isActive }) =>
+                          isActive
+                            ? "flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-rose-400 to-rose-500 text-white rounded-lg shadow-md transform transition-all duration-200"
+                            : "flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-rose-100 hover:text-rose-600 rounded-lg transition-all duration-200"
+                        }
+                      >
+                        <span className="font-medium">Admin Dashboard</span>
+                      </NavLink>
+                    ) : (
+                      <NavLink
+                        to="/dashboard/profile"
+                        end
+                        className={({ isActive }) =>
+                          isActive
+                            ? "flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-rose-400 to-rose-500 text-white rounded-lg shadow-md transform transition-all duration-200"
+                            : "flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-rose-100 hover:text-rose-600 rounded-lg transition-all duration-200"
+                        }
+                      >
+                        <span className="font-medium">Dashboard</span>
+                      </NavLink>
+                    )}
+
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left  px-4 py-2 text-black hover:bg-rose-100 rounded-md transition-colors"
@@ -121,7 +146,7 @@ const MyNavbar = () => {
       {toggle && (
         <div className="md:hidden absolute w-44 right-2 p-4 bg-white/80 backdrop-blur-md rounded-md shadow-lg mt-2 z-30 border border-rose-100">
           <ul className="flex flex-col gap-4 text-lg font-medium ">
-            {['/', '/biodatas', '/about', '/contact'].map((link, index) => (
+            {["/", "/biodatas", "/about", "/contact"].map((link, index) => (
               <NavLink
                 key={index}
                 to={link}
@@ -132,13 +157,17 @@ const MyNavbar = () => {
                   transition-all duration-300
                   after:content-[''] after:absolute after:left-0 after:-bottom-[2px]
                   after:h-[2px] after:w-0 after:bg-rose-500 after:transition-all after:duration-500 after:ease-in-out
-                  ${isActive
-                    ? 'text-rose-500 after:w-full'
-                    : 'text-black hover:text-rose-500 hover:after:w-full'}
+                  ${
+                    isActive
+                      ? "text-rose-500 after:w-full"
+                      : "text-black hover:text-rose-500 hover:after:w-full"
+                  }
                   `
                 }
               >
-                {link === '/' ? 'Home' : link.slice(1).replace(/([A-Z])/g, ' $1')}
+                {link === "/"
+                  ? "Home"
+                  : link.slice(1).replace(/([A-Z])/g, " $1")}
               </NavLink>
             ))}
           </ul>

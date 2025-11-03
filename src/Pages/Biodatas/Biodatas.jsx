@@ -117,8 +117,6 @@ const Biodatas = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
-    
-        <Heading heading="All Biodatas" subheading="Find your perfect match from our verified members" />
 
         <div className="lg:hidden mb-6">
           <button

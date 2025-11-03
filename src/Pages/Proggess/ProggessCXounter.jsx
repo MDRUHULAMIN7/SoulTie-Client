@@ -7,14 +7,13 @@ import UseAuth from "../../Hooks/UseAuth";
 import UseAxiosPublic from "../../Hooks/UseAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import { IoManSharp } from "react-icons/io5";
-import { IoMdWoman } from "react-icons/io";
-import { ImUserCheck } from "react-icons/im";
+import { ImUserCheck, ImWoman } from "react-icons/im";
 
-const ProggessCXounter = ({ data }) => {
+const ProgressCounter = ({ data }) => {
     const { loading } = UseAuth();
     const axiosPublic = UseAxiosPublic();
 
-    const { data: stats = {} } = useQuery({
+    const { data: stats = {}, isLoading: statsLoading } = useQuery({
         queryKey: ["admin-info"],
         enabled: !loading,
         queryFn: async () => {
@@ -23,102 +22,151 @@ const ProggessCXounter = ({ data }) => {
         },
     });
 
+    const statsData = [
+        {
+            icon: <FaRegHeart className="text-4xl" />,
+            count: data?.length || 10,
+            label: "Couple Paired",
+            gradient: "from-rose-400 to-pink-500"
+        },
+        {
+            icon: <FaUsers className="text-4xl" />,
+            count: stats.biodata || 0,
+            label: "Registered Biodatas",
+            gradient: "from-rose-500 to-rose-600"
+        },
+        {
+            icon: <IoManSharp className="text-4xl" />,
+            count: stats.maleData || 0,
+            label: "Male Biodatas",
+            gradient: "from-blue-400 to-blue-500"
+        },
+        {
+            icon: <ImWoman className="text-4xl" />,
+            count: stats.femaleData || 0,
+            label: "Female Biodatas",
+            gradient: "from-pink-400 to-pink-500"
+        },
+        {
+            icon: <ImUserCheck className="text-4xl" />,
+            count: stats.premiumData || 0,
+            label: "Premium Members",
+            gradient: "from-rose-400 to-rose-500"
+        }
+    ];
+
     return (
-        <div className="px-4 py-8 lg:px-16 lg:py-12">
-            <Heading heading={"Progress Counter"} subheading={'See our progress on this journey'} />
-            <div className="lg:flex lg:gap-6 lg:mb-32">
-                <div className="lg:w-1/2 mx-auto hidden lg:block">
-                    <div className="relative w-full">
-                        <img className="w-full h-[450px] object-cover rounded-lg shadow-lg" src={img1} alt="Main Image" />
-                        <img className="absolute bottom-4 right-4 w-64 h-64 object-cover rounded-full border-8 border-white transform hover:scale-105 transition-transform duration-300" src={img2} alt="Overlay Image" />
+        <div className="py-5 px-4 sm:px-6 lg:px-16 ">
+            <Heading 
+                heading="Our Journey & Success" 
+                subheading="See how we're helping people find their perfect match" 
+            />
+
+            {/* Main Content Section */}
+            <div className=" mx-auto mt-12">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 lg:gap-12 items-center">
+                    
+                    {/* Left Side - Images */}
+                    <div className="relative order-2 lg:order-1">
+                        <div className="relative w-full">
+                            <img 
+                                className="w-full h-[350px] sm:h-[400px] lg:h-[500px] object-cover rounded-2xl shadow-2xl" 
+                                src={img1} 
+                                alt="Happy Couple" 
+                            />
+                            <div className="absolute bottom-4 right-4 lg:-bottom-10 lg:-right-10 ">
+                                <img 
+                                    className="w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 object-cover rounded-full border-8 border-white shadow-2xl transform hover:scale-105 transition-transform duration-300" 
+                                    src={img2} 
+                                    alt="Success Story" 
+                                />
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div className="lg:w-1/2 mx-auto mt-6 lg:mt-0">
-                    <div className="w-full lg:ml-12">
-                        <h1 className="text-3xl lg:text-4xl font-semibold text-gray-800">Our Progress Counter from Our Start</h1>
-                        <p className="mt-4 text-gray-700">Visualize your journey to forever with our matrimony progress counter! This innovative tool keeps you engaged and excited by tracking our progress towards your wedding day.</p>
-                        <p className="mt-4 text-gray-700">Whether you are managing tasks or cherishing moments together, the counter adds a whimsical touch to your love story, reminding you how close you are to building your happily ever after.</p>
-                        <div className="flex flex-col lg:flex-row justify-between items-center mt-8">
-                            <div className="flex items-center gap-4">
-                                <FaWhatsapp className="h-12 w-12 text-green-500" />
-                                <div>
-                                    <p className="text-lg font-semibold text-gray-800">Enquiry</p>
-                                    <p className="text-xl font-medium text-gray-700">+008 019001..</p>
+
+                    {/* Right Side - Content */}
+                    <div className="order-1 lg:order-2 space-y-6">
+                        <div>
+                     
+                            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 leading-tight">
+                                Connecting Hearts Across Bangladesh
+                            </h2>
+                        </div>
+
+                        <div className="space-y-4 text-gray-600 leading-relaxed">
+                            <p className="text-base sm:text-lg">
+                                Track our incredible journey as we continue to bring people together. 
+                                SoulTie has become Bangladesh's trusted platform for finding meaningful connections 
+                                and lifelong partnerships.
+                            </p>
+                            <p className="text-base sm:text-lg">
+                                Every number represents a story of hope, connection, and love. Join thousands 
+                                of satisfied members who found their perfect match through our platform.
+                            </p>
+                        </div>
+
+                        {/* Contact Cards */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                            <div className="bg-gradient-to-br from-green-50 to-green-100 p-5 rounded-xl border-2 border-green-200 hover:shadow-lg transition-all duration-300">
+                                <div className="flex items-center gap-4">
+                                    <div className="bg-green-500 p-3 rounded-full">
+                                        <FaWhatsapp className="text-white text-2xl" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-medium text-gray-600">Quick Enquiry</p>
+                                        <p className="text-lg font-bold text-gray-800">+880 19001...</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-4 mt-6 lg:mt-0">
-                                <MdEmail className="h-12 w-12 text-blue-500" />
-                                <div>
-                                    <p className="text-lg font-semibold text-gray-800">Get Support</p>
-                                    <p className="text-xl font-medium text-gray-700">soultie@a.com..</p>
+
+                            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-xl border-2 border-blue-200 hover:shadow-lg transition-all duration-300">
+                                <div className="flex items-center gap-4">
+                                    <div className="bg-blue-500 p-3 rounded-full">
+                                        <MdEmail className="text-white text-2xl" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-medium text-gray-600">Email Support</p>
+                                        <p className="text-lg font-bold text-gray-800">support@soultie.com</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            {/* Desktop View */}
-            <div className="mt-10 hidden lg:grid lg:grid-cols-4 gap-4">
-                <div className="bg-white p-6 border rounded-lg shadow-lg text-center hover:bg-gray-100 transition-colors duration-300">
-                    <FaRegHeart className="text-rose-500 text-3xl mb-2" />
-                    <h1 className="text-4xl font-bold text-gray-800">{data?.length}+</h1>
-                    <p className="text-lg text-rose-400 mt-2">Couple Paired</p>
-                </div>
-                <div className="bg-white p-6 border rounded-lg shadow-lg text-center hover:bg-gray-100 transition-colors duration-300">
-                    <FaUsers className="text-rose-500 text-3xl mb-2" />
-                    <h1 className="text-4xl font-bold text-gray-800">{stats.biodata}+</h1>
-                    <p className="text-lg text-rose-400 mt-2">Registered Biodatas</p>
-                </div>
-                <div className="bg-white p-6 border rounded-lg shadow-lg text-center hover:bg-gray-100 transition-colors duration-300">
-                    <IoManSharp className="text-rose-500 text-3xl mb-2" />
-                    <h1 className="text-4xl font-bold text-gray-800">{stats.maleData}+</h1>
-                    <p className="text-lg text-rose-400 mt-2">Male Biodatas</p>
-                </div>
-                <div className="bg-white p-6 border rounded-lg shadow-lg text-center hover:bg-gray-100 transition-colors duration-300">
-                    <IoMdWoman className="text-rose-500 text-3xl mb-2" />
-                    <h1 className="text-4xl font-bold text-gray-800">{stats.femaleData}+</h1>
-                    <p className="text-lg text-rose-400 mt-2">Female Biodatas</p>
-                </div>
-                <div className="bg-white p-6 border rounded-lg shadow-lg text-center hover:bg-gray-100 transition-colors duration-300">
-                    <ImUserCheck className="text-rose-500 text-3xl mb-2" />
-                    <h1 className="text-4xl font-bold text-gray-800">{stats.premiumData}+</h1>
-                    <p className="text-lg text-rose-400 mt-2">Premium Biodatas</p>
-                </div>
+
+            {/* Statistics Section */}
+            <div className=" mx-auto mt-16 xl:mt-24">
+
+
+                {statsLoading ? (
+                    <div className="flex justify-center py-12">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-rose-500"></div>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+                        {statsData.map((stat, index) => (
+                            <div
+                                key={index}
+                                className="group bg-white p-6 sm:p-8 rounded-2xl shadow-lg border-2 border-rose-200 hover:border-rose-400 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                            >
+                                <div className={`bg-gradient-to-br ${stat.gradient} w-16 h-16 rounded-full flex items-center justify-center mb-4 mx-auto text-white group-hover:rotate-12 transition-transform duration-300`}>
+                                    {stat.icon}
+                                </div>
+                                <h4 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-2 text-center">
+                                    {stat.count}+
+                                </h4>
+                                <p className="text-sm sm:text-base text-gray-600 font-medium text-center">
+                                    {stat.label}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
-            {/* Mobile View */}
-            <div className="mt-10 lg:hidden">
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white p-4 border rounded-lg shadow-lg text-center hover:bg-gray-100 transition-colors duration-300">
-                        <FaRegHeart className="text-rose-500 text-3xl mb-2" />
-                        <h1 className="text-3xl font-bold text-gray-800">{10}+</h1>
-                        <p className="text-lg text-rose-400 mt-2">Couple Paired</p>
-                    </div>
-                    <div className="bg-white p-4 border rounded-lg shadow-lg text-center hover:bg-gray-100 transition-colors duration-300">
-                        <FaUsers className="text-rose-500 text-3xl mb-2" />
-                        <h1 className="text-3xl font-bold text-gray-800">{stats.biodata}+</h1>
-                        <p className="text-lg text-rose-400 mt-2">Registered Biodatas</p>
-                    </div>
-                    <div className="bg-white p-4 border rounded-lg shadow-lg text-center hover:bg-gray-100 transition-colors duration-300">
-                        <IoManSharp className="text-rose-500 text-3xl mb-2" />
-                        <h1 className="text-3xl font-bold text-gray-800">{stats.maleData}+</h1>
-                        <p className="text-lg text-rose-400 mt-2">Male Biodatas</p>
-                    </div>
-                    <div className="bg-white p-4 border rounded-lg shadow-lg text-center hover:bg-gray-100 transition-colors duration-300">
-                        <IoMdWoman className="text-rose-500 text-3xl mb-2" />
-                        <h1 className="text-3xl font-bold text-gray-800">{stats.femaleData}+</h1>
-                        <p className="text-lg text-rose-400 mt-2">Female Biodatas</p>
-                    </div>
-                    <div className="bg-white p-4 border rounded-lg shadow-lg text-center hover:bg-gray-100 transition-colors duration-300">
-                        <ImUserCheck className="text-rose-500 text-3xl mb-2" />
-                        <h1 className="text-3xl font-bold text-gray-800">{stats.premiumData}+</h1>
-                        <p className="text-lg text-rose-400 mt-2">Premium Biodatas</p>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };
 
-export default ProggessCXounter;
+export default ProgressCounter;

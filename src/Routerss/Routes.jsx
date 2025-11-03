@@ -23,104 +23,179 @@ import SeeSuccess from "../Pages/Dashboard/Admin/SeeSuccess";
 import About from "../Pages/About/About";
 import Contact from "../Pages/Contact/Contact";
 import AuthForm from "../Components/Auth/AuthForm";
-
+import AdminProfile from "../Components/Profiles/AdminProfile";
+import UserProfile from "../Components/Profiles/UserProfile";
 
 export const router = createBrowserRouter([
-    {
-        path:'/',
-        element:<Main></Main>,
-        errorElement:<ErrorPage></ErrorPage>,
-       children:[
-        {
-            path:'/',
-            element:<Home></Home>
-        },
-        {
-            path:'detailprofile/:id',
-            element:<PrivateRoute><DetailBiodata></DetailBiodata></PrivateRoute>
-        }
-        ,
-        {
-            path:"biodatas",
-            element:<Biodatas></Biodatas>
+  {
+    path: "/",
+    element: <Main></Main>,
+    errorElement: <ErrorPage></ErrorPage>,
+    children: [
+      {
+        path: "/",
+        element: <Home></Home>,
+      },
+      {
+        path: "detailprofile/:id",
+        element: (
+          <PrivateRoute>
+            <DetailBiodata></DetailBiodata>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "biodatas",
+        element: <Biodatas></Biodatas>,
+      },
+      {
+        path: "/about",
+        element: <About></About>,
+      },
+      {
+        path: "/contact",
+        element: <Contact></Contact>,
+      },
+      {
+        path: "signup",
+        element: <SignUp></SignUp>,
+      },
+      {
+        path: "login",
+        element: <AuthForm />,
+      },
+    ],
+  },
+  {
+    path: "dashboard",
+    element: (
+      <PrivateRoute>
+        <DashboardLayout></DashboardLayout>
+      </PrivateRoute>
+    ),
+    children: [
+      // admins routes
+      {
+        path: "/dashboard/adminprofile",
+        element: (
+          <PrivateRoute>
+            {" "}
+            <AdminRoute>
+              <AdminProfile></AdminProfile>
+            </AdminRoute>{" "}
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/adminhome",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <AdminHome></AdminHome>
+            </AdminRoute>
+          </PrivateRoute>
+        ),
+      },
 
-        },
-        {
-            path:"/about",
-            element:<About></About>
+      {
+        path: "/dashboard/manageusers",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <ManageUsers></ManageUsers>
+            </AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/approvepremium",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <ApprovedPremium></ApprovedPremium>
+            </AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/approvedcontactrequest",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <ApprovedContactRequest></ApprovedContactRequest>
+            </AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/successstory",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <SeeSuccess></SeeSuccess>
+            </AdminRoute>
+          </PrivateRoute>
+        ),
+      },
 
-        },
-        {
-            path:"/contact",
-            element:<Contact></Contact>
+      // normal users routes
 
-        },
-        {
-            path:'signup',
-            element:<SignUp></SignUp>
-        }
-        ,{
-            path:'login',
-            element:<AuthForm/>
-        }
-
-       ] 
-    },
-    {
-        path:'dashboard',
-        element:<PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
-        children:[
-            // admins routes
-
-            {
-                path:"/dashboard/adminhome",
-                element:<PrivateRoute><AdminRoute><AdminHome></AdminHome></AdminRoute></PrivateRoute>
-            },
-          
-            {
-                path:'/dashboard/manageusers',
-                element:<PrivateRoute><AdminRoute><ManageUsers></ManageUsers></AdminRoute></PrivateRoute>
-            },
-            {
-                path:'/dashboard/approvepremium',
-                element:<PrivateRoute><AdminRoute><ApprovedPremium></ApprovedPremium></AdminRoute></PrivateRoute>
-            },
-            {
-                path:'/dashboard/approvedcontactrequest',
-                element:<PrivateRoute><AdminRoute><ApprovedContactRequest></ApprovedContactRequest></AdminRoute></PrivateRoute>
-            },
-            {
-                path:'/dashboard/successstory',
-                element:<PrivateRoute><AdminRoute><SeeSuccess></SeeSuccess></AdminRoute></PrivateRoute>
-            },
-
-            // normal users routes
-
-            {
-                path:'/dashboard/editbiodata',
-                element:<PrivateRoute><EditBiodata></EditBiodata></PrivateRoute>
-            },
-            {
-                path:'/dashboard/gotmarried',
-                element:<PrivateRoute><GotMarried></GotMarried></PrivateRoute>
-            },
-            {
-                path:"/dashboard/payment/:biodataId",
-                element:<PrivateRoute><Payment></Payment></PrivateRoute>
-            }
-            ,
-            {
-                path:'/dashboard/viewbiodata',
-                element:<PrivateRoute><ViewBiodata></ViewBiodata></PrivateRoute>
-            },
-            {
-                path:'/dashboard/mycontactrequest',
-                element:<PrivateRoute><MyContactRequest></MyContactRequest></PrivateRoute>
-            },
-            {
-                path:'/dashboard/favouritebiodata',
-                element:<PrivateRoute><MyFavouriteBiodata></MyFavouriteBiodata></PrivateRoute>
-            },
-        ]
-    }
-])
+      {
+        path: "/dashboard/profile",
+        element: (
+          <PrivateRoute>
+            <UserProfile />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/editbiodata",
+        element: (
+          <PrivateRoute>
+            <EditBiodata></EditBiodata>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/gotmarried",
+        element: (
+          <PrivateRoute>
+            <GotMarried></GotMarried>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/payment/:biodataId",
+        element: (
+          <PrivateRoute>
+            <Payment></Payment>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/viewbiodata",
+        element: (
+          <PrivateRoute>
+            <ViewBiodata></ViewBiodata>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/mycontactrequest",
+        element: (
+          <PrivateRoute>
+            <MyContactRequest></MyContactRequest>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/favouritebiodata",
+        element: (
+          <PrivateRoute>
+            <MyFavouriteBiodata></MyFavouriteBiodata>
+          </PrivateRoute>
+        ),
+      },
+    ],
+  },
+]);

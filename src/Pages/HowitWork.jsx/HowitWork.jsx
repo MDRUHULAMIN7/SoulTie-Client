@@ -6,7 +6,7 @@ import Heading from "../Dashboard/Sidebar/Heading";
 
 const HowitWork = () => {
   return (
-    <div className="w-full mx-auto lg:p-6 md:p-4 rounded-lg">
+    <div className="w-full mx-auto  rounded-lg py-5 px-2 md:px-8 lg:px-16">
       {/* Heading */}
       <Heading
         heading={"How It Works"}

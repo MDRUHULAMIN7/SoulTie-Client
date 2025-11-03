@@ -2,8 +2,15 @@ import { FaRegHeart, FaUsers, FaShieldAlt, FaAward } from "react-icons/fa";
 import Heading from "../Dashboard/Sidebar/Heading";
 import { MdEmail, MdVerifiedUser, MdSecurity } from "react-icons/md";
 import { HiSparkles } from "react-icons/hi";
+import { useEffect } from "react";
 
 const About = () => {
+     const scrollToTop = () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+      useEffect(() => {
+        scrollToTop();
+      }, []);
     return (
         <div className=" px-2 md:px-8 lg:px-16 pb-4">
             < Heading heading={" About SoulTie"} subheading={"Connecting Hearts, Creating Futures in Bangladesh"} />

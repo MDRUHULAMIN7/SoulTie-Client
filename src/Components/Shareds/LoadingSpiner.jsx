@@ -2,12 +2,9 @@
 
 const LoadingSpiner = () => {
     return (
-        <div className="flex items-center justify-center space-x-2  h-screen">
-     
-        <div className="w-12 h-12 rounded-full animate-pulse bg-rose-400"></div>
-        <div className="w-12 h-12 rounded-full animate-pulse bg-rose-400"></div>
-        <div className="w-12 h-12 rounded-full animate-pulse bg-rose-400"></div>
-    </div>
+        <div className="flex justify-center items-center min-h-screen bg-rose-50">
+        <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-rose-500"></div>
+      </div>
     );
 };
 
