@@ -135,17 +135,7 @@ const Sidebar = () => {
                     <span className="font-medium">Manage Users</span>
                   </NavLink>
 
-                  <NavLink
-                    to="/dashboard/approvepremium"
-                    className={({ isActive }) =>
-                      isActive
-                        ? "flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-rose-400 to-rose-500 text-white rounded-lg shadow-md transform transition-all duration-200"
-                        : "flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-rose-100 hover:text-rose-600 rounded-lg transition-all duration-200"
-                    }
-                  >
-                    <FcApproval className="text-xl" />
-                    <span className="font-medium">Approve Premium</span>
-                  </NavLink>
+                 
 
                   <NavLink
                     to="/dashboard/approvedcontactrequest"

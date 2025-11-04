@@ -3,12 +3,10 @@ import Main from "../Layoutss/Main/Main";
 import Home from "../Pages/Home/Home";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import SignUp from "../Pages/SignUp/SignUp";
-import Login from "../Pages/Login/Login";
 import DashboardLayout from "../Layoutss/Dashboard/DashboardLayout";
 import PrivateRoute from "./PrivateRoute";
 import AdminHome from "../Pages/Dashboard/Admin/AdminHome";
 import ManageUsers from "../Pages/Dashboard/Admin/ManageUsers";
-import ApprovedPremium from "../Pages/Dashboard/Admin/ApprovedPremium";
 import ApprovedContactRequest from "../Pages/Dashboard/Admin/ApprovedContactRequest";
 import EditBiodata from "../Pages/Dashboard/Normal/EditBiodata";
 import ViewBiodata from "../Pages/Dashboard/Normal/ViewBiodata";
@@ -103,16 +101,6 @@ export const router = createBrowserRouter([
           <PrivateRoute>
             <AdminRoute>
               <ManageUsers></ManageUsers>
-            </AdminRoute>
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/dashboard/approvepremium",
-        element: (
-          <PrivateRoute>
-            <AdminRoute>
-              <ApprovedPremium></ApprovedPremium>
             </AdminRoute>
           </PrivateRoute>
         ),

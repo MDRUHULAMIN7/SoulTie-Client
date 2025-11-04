@@ -32,6 +32,7 @@ const ManageUsers = () => {
       const res = await axiosPublic.get(
         `/manageusers?page=${currentPage}&limit=${itemsPerPage}&search=${searchTerm}`
       );
+      console.log(res)
       return res.data;
     },
   });

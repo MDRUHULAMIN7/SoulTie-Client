@@ -2,41 +2,58 @@ import { useQuery } from "@tanstack/react-query";
 import UseAuth from "../../../Hooks/UseAuth";
 import UseAxiosPublic from "../../../Hooks/UseAxiosPublic";
 import Heading from "../Sidebar/Heading";
-import { 
-  PieChart, 
-  Pie, 
-  Cell, 
+import {
+  PieChart,
+  Pie,
+  Cell,
   ResponsiveContainer,
-  BarChart, 
-  Bar,  
-  XAxis, 
-  YAxis, 
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
 } from "recharts";
-import { 
-  FaDollarSign, 
-  FaUsers, 
-  FaMale, 
-  FaFemale, 
+import {
+  FaDollarSign,
+  FaUsers,
+  FaMale,
+  FaFemale,
   FaCrown,
   FaChartBar,
-  FaChartPie
+  FaChartPie,
 } from "react-icons/fa";
+import LoadingSpiner from "../../../Components/Shareds/LoadingSpiner";
+import { MdDangerous } from "react-icons/md";
 
-// Chart color schemes
-const PIE_CHART_COLORS = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7"];
-const BAR_CHART_COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#8dd1e1"];
+const PIE_CHART_COLORS = [
+  "#FF6B6B",
+  "#4ECDC4",
+  "#45B7D1",
+  "#96CEB4",
+  "#FFEAA7",
+];
+const BAR_CHART_COLORS = [
+  "#8884d8",
+  "#82ca9d",
+  "#ffc658",
+  "#ff7300",
+  "#8dd1e1",
+];
 
 // Custom shape for bar chart
 const TriangleBar = (props) => {
   const { fill, x, y, width, height } = props;
-  
+
   const getPath = (x, y, width, height) => {
-    return `M${x},${y + height}C${x + width / 3},${y + height} ${x + width / 2},${y + height / 3}
+    return `M${x},${y + height}C${x + width / 3},${y + height} ${
+      x + width / 2
+    },${y + height / 3}
     ${x + width / 2}, ${y}
-    C${x + width / 2},${y + height / 3} ${x + (2 * width) / 3},${y + height} ${x + width}, ${y + height}
+    C${x + width / 2},${y + height / 3} ${x + (2 * width) / 3},${y + height} ${
+      x + width
+    }, ${y + height}
     Z`;
   };
 
@@ -78,9 +95,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     return (
       <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
         <p className="font-semibold text-gray-800">{`${label}`}</p>
-        <p className="text-rose-600">
-          {`Value: ${payload[0].value}`}
-        </p>
+        <p className="text-rose-600">{`Value: ${payload[0].value}`}</p>
       </div>
     );
   }
@@ -91,14 +106,18 @@ const AdminHome = () => {
   const { user } = UseAuth();
   const axiosPublic = UseAxiosPublic();
 
-  const { data: stats = {}, isLoading, error } = useQuery({
+  const {
+    data: stats = {},
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["admin-stats"],
     enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosPublic.get("/admin-info");
-      return res.data;
-    },
-    refetchInterval: 300000, // Refetch every 5 minutes
+
+      return res?.data?.data;
+    }
   });
 
   // Stats cards data
@@ -109,7 +128,7 @@ const AdminHome = () => {
       icon: FaDollarSign,
       color: "bg-gradient-to-r from-green-400 to-green-500",
       bgColor: "bg-green-50",
-      textColor: "text-green-600"
+      textColor: "text-green-600",
     },
     {
       title: "Total Biodata",
@@ -117,7 +136,7 @@ const AdminHome = () => {
       icon: FaUsers,
       color: "bg-gradient-to-r from-blue-400 to-blue-500",
       bgColor: "bg-blue-50",
-      textColor: "text-blue-600"
+      textColor: "text-blue-600",
     },
     {
       title: "Male Biodata",
@@ -125,7 +144,7 @@ const AdminHome = () => {
       icon: FaMale,
       color: "bg-gradient-to-r from-indigo-400 to-indigo-500",
       bgColor: "bg-indigo-50",
-      textColor: "text-indigo-600"
+      textColor: "text-indigo-600",
     },
     {
       title: "Female Biodata",
@@ -133,7 +152,7 @@ const AdminHome = () => {
       icon: FaFemale,
       color: "bg-gradient-to-r from-pink-400 to-pink-500",
       bgColor: "bg-pink-50",
-      textColor: "text-pink-600"
+      textColor: "text-pink-600",
     },
     {
       title: "Premium Users",
@@ -141,34 +160,56 @@ const AdminHome = () => {
       icon: FaCrown,
       color: "bg-gradient-to-r from-yellow-400 to-yellow-500",
       bgColor: "bg-yellow-50",
-      textColor: "text-yellow-600"
-    }
+      textColor: "text-yellow-600",
+    },
   ];
 
   // Chart data preparation
   const chartData = [
-    { name: "Revenue", value: stats?.revenue || 0, display: `$${stats?.revenue || 0}` },
-    { name: "Biodata", value: stats?.biodata || 0, display: stats?.biodata || 0 },
-    { name: "Male", value: stats?.maleData || 0, display: stats?.maleData || 0 },
-    { name: "Female", value: stats?.femaleData || 0, display: stats?.femaleData || 0 },
-    { name: "Premium", value: stats?.premiumData || 0, display: stats?.premiumData || 0 }
+    {
+      name: "Revenue",
+      value: stats?.revenue || 0,
+      display: `$${stats?.revenue || 0}`,
+    },
+    {
+      name: "Biodata",
+      value: stats?.biodata || 0,
+      display: stats?.biodata || 0,
+    },
+    {
+      name: "Male",
+      value: stats?.maleData || 0,
+      display: stats?.maleData || 0,
+    },
+    {
+      name: "Female",
+      value: stats?.femaleData || 0,
+      display: stats?.femaleData || 0,
+    },
+    {
+      name: "Premium",
+      value: stats?.premiumData || 0,
+      display: stats?.premiumData || 0,
+    },
   ];
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-rose-500"></div>
-      </div>
-    );
+    return <LoadingSpiner />;
   }
 
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Error Loading Data</h2>
-          <p className="text-gray-600">Failed to load admin statistics. Please try again later.</p>
+          <div className="text-red-500 text-6xl mb-4">
+            <MdDangerous />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Error Loading Data
+          </h2>
+          <p className="text-gray-600">
+            Failed to load admin statistics. Please try again later.
+          </p>
         </div>
       </div>
     );
@@ -176,7 +217,7 @@ const AdminHome = () => {
 
   return (
     <div className="">
-         <Heading
+      <Heading
         heading="Admin Dashboard"
         subheading="Welcome back! Here's your platform overview"
       />
@@ -189,7 +230,9 @@ const AdminHome = () => {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium mb-2">{card.title}</p>
+                <p className="text-gray-600 text-sm font-medium mb-2">
+                  {card.title}
+                </p>
                 <p className="text-2xl font-bold text-gray-800">{card.value}</p>
               </div>
               <div className={`p-3 rounded-full ${card.bgColor}`}>
@@ -221,14 +264,14 @@ const AdminHome = () => {
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis 
-                  dataKey="name" 
-                  tick={{ fill: '#6b7280' }}
-                  axisLine={{ stroke: '#e5e7eb' }}
+                <XAxis
+                  dataKey="name"
+                  tick={{ fill: "#6b7280" }}
+                  axisLine={{ stroke: "#e5e7eb" }}
                 />
-                <YAxis 
-                  tick={{ fill: '#6b7280' }}
-                  axisLine={{ stroke: '#e5e7eb' }}
+                <YAxis
+                  tick={{ fill: "#6b7280" }}
+                  axisLine={{ stroke: "#e5e7eb" }}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
@@ -239,7 +282,10 @@ const AdminHome = () => {
                   label={{ position: "top", fill: "#374151", fontSize: 12 }}
                 >
                   {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={BAR_CHART_COLORS[index % BAR_CHART_COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={BAR_CHART_COLORS[index % BAR_CHART_COLORS.length]}
+                    />
                   ))}
                 </Bar>
               </BarChart>
@@ -279,21 +325,21 @@ const AdminHome = () => {
                     />
                   ))}
                 </Pie>
-                <Tooltip 
+                <Tooltip
                   formatter={(value, name) => [value, name]}
-                  contentStyle={{ 
-                    backgroundColor: '#fff', 
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px'
+                  contentStyle={{
+                    backgroundColor: "#fff",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "8px",
                   }}
                 />
-                <Legend 
-                  layout="vertical" 
-                  verticalAlign="middle" 
+                <Legend
+                  layout="vertical"
+                  verticalAlign="middle"
                   align="right"
                   wrapperStyle={{ right: -20 }}
                   formatter={(value, entry) => (
-                    <span style={{ color: '#374151', fontSize: '12px' }}>
+                    <span style={{ color: "#374151", fontSize: "12px" }}>
                       {value}
                     </span>
                   )}
@@ -309,7 +355,8 @@ const AdminHome = () => {
           <div>
             <h3 className="text-xl font-bold mb-2">Platform Performance</h3>
             <p className="text-rose-100">
-              Total platform revenue: <span className="font-bold">${stats?.revenue || 0}</span>
+              Total platform revenue:{" "}
+              <span className="font-bold">${stats?.revenue || 0}</span>
             </p>
           </div>
           <div className="mt-4 md:mt-0">
@@ -319,7 +366,9 @@ const AdminHome = () => {
                 <div className="text-rose-100">Total Profiles</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold">{stats?.premiumData || 0}</div>
+                <div className="text-2xl font-bold">
+                  {stats?.premiumData || 0}
+                </div>
                 <div className="text-rose-100">Premium Users</div>
               </div>
             </div>
