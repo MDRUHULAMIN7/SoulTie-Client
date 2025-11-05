@@ -22,11 +22,18 @@ import {
   FaSync,
 } from "react-icons/fa";
 import LoadingSpiner from "../../../Components/Shareds/LoadingSpiner";
+import useUserRole from "../../../Hooks/UserRole";
+import { useEffect } from "react";
 
 const ViewBiodata = () => {
   const { user } = UseAuth();
   const axiosPublic = UseAxiosPublic();
-
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+useEffect(() => {
+  scrollToTop();
+}, []);
   const {
     data: mydata = [],
     refetch,
@@ -40,7 +47,9 @@ const ViewBiodata = () => {
     enabled: !!user?.email,
   });
 
-  const handlePremiumRequest = async (id) => {
+ const [role,] = useUserRole();
+
+  const handlePremiumRequest = async (email) => {
     const result = await Swal.fire({
       title: "Go Premium?",
       text: "Request premium status for your biodata to get more visibility",
@@ -56,7 +65,7 @@ const ViewBiodata = () => {
     if (result.isConfirmed) {
       try {
         const updaterole = { updaterole: "requested" };
-        const res = await axiosPublic.patch(`/biodataupdate/${id}`, updaterole);
+        const res = await axiosPublic.patch(`/biodataupdate/${email}`, updaterole);
 
         if (res.data.modifiedCount > 0) {
           await Swal.fire({
@@ -79,7 +88,7 @@ const ViewBiodata = () => {
     }
   };
 
-  const handleWithdrawRequest = async (id) => {
+  const handleWithdrawRequest = async (email) => {
     const result = await Swal.fire({
       title: "Withdraw Premium Request?",
       text: "Are you sure you want to withdraw your premium request?",
@@ -95,7 +104,7 @@ const ViewBiodata = () => {
     if (result.isConfirmed) {
       try {
         const updaterole = { updaterole: "normal" };
-        const res = await axiosPublic.patch(`/biodataupdate/${id}`, updaterole);
+        const res = await axiosPublic.patch(`/biodataupdate/${email}`, updaterole);
 
         if (res.data.modifiedCount > 0) {
           await Swal.fire({
@@ -158,11 +167,11 @@ const ViewBiodata = () => {
   };
 
   const renderActionButton = () => {
-    switch (mydata?.role) {
+    switch (role?.type) {
       case "normal":
         return (
           <button
-            onClick={() => handlePremiumRequest(mydata?._id)}
+            onClick={() => handlePremiumRequest(user?.email)}
             className="bg-gradient-to-r from-rose-400 to-rose-500 text-white px-8 py-3 rounded-full font-bold hover:from-rose-500 hover:to-rose-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-2 mx-auto"
           >
             <FaStar />
@@ -174,15 +183,15 @@ const ViewBiodata = () => {
         return (
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
-              onClick={() => handleWithdrawRequest(mydata?._id)}
+              onClick={() => handleWithdrawRequest(user?.email)}
               className="bg-gray-500 text-white px-6 py-3 rounded-full font-bold hover:bg-gray-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-2"
             >
               <FaTimes />
               Withdraw Request
             </button>
             <div className="text-yellow-600 bg-yellow-50 px-4 py-3 rounded-full border border-yellow-200 flex items-center gap-2">
-              <FaSync className="animate-spin" />
-              Under Review
+              <FaSync  />
+              Under Admin Review
             </div>
           </div>
         );
@@ -206,7 +215,7 @@ const ViewBiodata = () => {
   };
 
   return (
-    <div className=" mx-auto">
+    <div className="">
       <div className="bg-white rounded-2xl shadow-xl border border-rose-100 overflow-hidden mb-6">
         <div className="bg-gradient-to-r from-rose-400 to-rose-500 p-6 text-white">
           <div className="flex flex-col md:flex-row items-center gap-6">
@@ -216,7 +225,7 @@ const ViewBiodata = () => {
                 src={mydata.photo || "/default-avatar.png"}
                 alt={mydata.name}
               />
-              {mydata.role === "premium" && (
+              {role?.type === "premium" && (
                 <div className="absolute -top-2 -right-2 bg-yellow-400 rounded-full p-2 shadow-lg">
                   <FaCrown className="text-white text-sm" />
                 </div>
@@ -228,7 +237,7 @@ const ViewBiodata = () => {
                 <h1 className="text-2xl lg:text-3xl font-bold">
                   {mydata?.name}
                 </h1>
-                {getRoleBadge(mydata?.role)}
+                {getRoleBadge(role?.type)}
               </div>
             </div>
           </div>
@@ -321,7 +330,7 @@ const ViewBiodata = () => {
                 <InfoCard
                   icon={FaRulerVertical}
                   label="Expected Height"
-                  value={mydata?.PartnerHeight}
+                  value={mydata?.ParnerHeight}
                 />
                 <InfoCard
                   icon={FaWeight}
@@ -346,14 +355,14 @@ const ViewBiodata = () => {
                 </div>
               </div>
               <h3 className="text-2xl font-bold mb-2">
-                {mydata?.role === "premium"
+                {role?.type === "premium"
                   ? "Premium Member"
                   : "Premium Status"}
               </h3>
               <p className="text-rose-100 mb-6 opacity-90">
-                {mydata?.role === "normal"
+                {role?.type === "normal"
                   ? "Get more visibility and priority in search results with Premium status"
-                  : mydata?.role === "requested"
+                  : role?.type === "requested"
                   ? "Your premium request is under review by our admin team"
                   : "You're enjoying exclusive premium benefits and increased visibility"}
               </p>

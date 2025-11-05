@@ -56,8 +56,8 @@ const Login = ({ navigate, from, axiosPublic }) => {
         const userInfo = {
           name: result.user?.displayName,
           email: result.user?.email,
-          roll: 'normal',
-          role: 'normal',
+          roll: 'user',
+          type: 'normal',
           photo: result.user?.photoURL,
           createdAt: new Date()
         };

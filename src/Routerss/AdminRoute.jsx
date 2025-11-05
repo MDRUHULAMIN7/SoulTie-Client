@@ -14,7 +14,7 @@ const AdminRoute = ({children}) => {
 if( loading || isLoading) {
     return <LoadingSpiner></LoadingSpiner>;
 }
-if(user && role[0]=='admin') return children;
+if(user && role?.roll=='admin') return children;
 
 return (
     <Navigate to={'/login'} state={{from:location}} replace></Navigate>

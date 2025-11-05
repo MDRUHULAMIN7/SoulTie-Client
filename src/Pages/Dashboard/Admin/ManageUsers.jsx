@@ -37,7 +37,6 @@ const ManageUsers = () => {
     },
   });
 
-  // Extract data from response
   const users = usersResponse || [];
   const totalPages = usersResponse?.pagination?.totalPages || 1;
   const totalUsers = usersResponse?.pagination?.totalItems || 0;
@@ -85,8 +84,8 @@ const ManageUsers = () => {
 
   // Handle Make Premium
   const handleMakePremium = async (id, currentStatus) => {
-    const newStatus = currentStatus === "premium" ? "standard" : "premium";
-    const action = newStatus === "premium" ? "Premium" : "Standard";
+    const newStatus = currentStatus === "premium" ? "normal" : "premium";
+    const action = newStatus === "premium" ? "Premium" : "Normal";
 
     Swal.fire({
       title: "Are you sure?",
@@ -104,7 +103,7 @@ const ManageUsers = () => {
             `/userupdatepremium/${id}`,
             updaterole
           );
-
+            console.log(res)
           if (res.data.modifiedCount > 0 || res.data.success) {
             await refetch();
             Swal.fire({
@@ -222,7 +221,10 @@ const ManageUsers = () => {
                   Admin Role
                 </th>
                 <th className="px-6 py-4 text-center text-sm font-semibold">
-                  Membership
+                  UserType
+                </th>
+                <th className="px-6 py-4 text-center text-sm font-semibold">
+                  Update UserType
                 </th>
               </tr>
             </thead>
@@ -279,21 +281,42 @@ const ManageUsers = () => {
                         </button>
                       </div>
                     </td>
+             <td className="px-6 py-4">
+  <div className="flex justify-center">
+    <button
+      className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 transform hover:scale-105
+        ${
+          userData?.type === "premium"
+            ? "bg-yellow-500 text-white"
+            : userData?.type === "requested"
+            ? "bg-blue-500 text-white"
+            : "bg-gray-200 text-gray-700"
+        }`}
+    >
+      {userData?.type === "premium"
+        ? "Premium"
+        : userData?.type === "requested"
+        ? "Requested"
+        : "Normal"}
+    </button>
+  </div>
+</td>
+
                     <td className="px-6 py-4">
                       <div className="flex justify-center">
                         <button
                           onClick={() =>
-                            handleMakePremium(userData?._id, userData?.role)
+                            handleMakePremium(userData?._id, userData?.type)
                           }
                           className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 transform hover:scale-105 ${
-                            userData?.role === "premium"
+                            userData?.type === "premium"
                               ? "bg-gradient-to-r from-yellow-400 to-yellow-500 text-white shadow-md"
                               : "bg-gray-200 text-gray-700 hover:bg-yellow-100"
                           }`}
                         >
-                          {userData?.role === "premium" ? (
+                          {userData?.type === "premium" ? (
                             <span className="flex items-center gap-2">
-                              <FaCrown /> Premium
+                              Make  Normal
                             </span>
                           ) : (
                             <span>Make Premium</span>

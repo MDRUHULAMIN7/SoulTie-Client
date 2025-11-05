@@ -103,7 +103,7 @@ const Sidebar = () => {
               )}
 
               {/* Admin Routes */}
-              {role[0] === "admin" ? (
+              {role?.roll === "admin" ? (
                 <div className="flex flex-col space-y-2 mt-4">
                   <div className="px-4 py-2">
                     <span className="text-xs font-bold text-rose-600 uppercase tracking-wider">

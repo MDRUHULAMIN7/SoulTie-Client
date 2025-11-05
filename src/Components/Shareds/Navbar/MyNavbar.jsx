@@ -88,7 +88,7 @@ const MyNavbar = () => {
               {toggleMenu && (
                 <div className="absolute top-full right-0 mt-2 w-48 bg-white/80 backdrop-blur-md border border-rose-100 shadow-xl rounded-md z-30 transition-all">
                   <ul className="py-2  font-medium text-left px-2">
-                    {role[0] === "admin" ? (
+                    {role?.roll === "admin" ? (
                       <NavLink
                         to="/dashboard/adminprofile"
                         end

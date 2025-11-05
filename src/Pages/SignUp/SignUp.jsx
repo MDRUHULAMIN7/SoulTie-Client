@@ -39,8 +39,8 @@ const Signup= ({ navigate, from, axiosPublic }) => {
       const userInfo = { 
         name: data.name, 
         email: data.email, 
-        roll: "normal", 
-        role: "normal",
+        roll: "user", 
+        type: "normal",
         photo: photoUrl,
         createdAt: new Date()
       };

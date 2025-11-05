@@ -1,326 +1,498 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import UseAxiosPublic from "../../../Hooks/UseAxiosPublic";
-import UseAuth from "../../../Hooks/UseAuth";
 import Heading from "../Sidebar/Heading";
 import Swal from "sweetalert2";
+
 import {
-  FaCheckCircle,
-  FaChevronLeft,
-  FaChevronRight,
-  FaIdCard,
-  FaTimesCircle,
-} from "react-icons/fa";
-import { MdPending, MdVerified } from "react-icons/md";
+  CheckCircle,
+  XCircle,
+  Clock,
+  Mail,
+  Calendar,
+  CreditCard,
+  Filter,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  AlertCircle,
+  Shield,
+  RefreshCw,
+  Image as ImageIcon,
+} from "lucide-react";
+import LoadingSpiner from "../../../Components/Shareds/LoadingSpiner";
+import UseAxiosPublic from "../../../Hooks/UseAxiosPublic";
 
 const ApprovedContactRequest = () => {
   const axiosPublic = UseAxiosPublic();
-  const { user } = UseAuth();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const [statusFilter, setStatusFilter] = useState("pending");
+  const [searchTerm, setSearchTerm] = useState("");
+  const itemsPerPage = 10;
 
+  // Fetch all payments with pagination and filters
   const {
-    data: paymentsResponse,
-    refetch,
+    data: paymentsData,
     isLoading,
+    refetch,
+    error,
   } = useQuery({
-    queryKey: ["payments", currentPage],
-    enabled: !!user?.email,
+    queryKey: ["admin-payments", currentPage, statusFilter],
     queryFn: async () => {
-      const res = await axiosPublic.get(
-        `/payments?page=${currentPage}&limit=${itemsPerPage}`
-      );
-      return res?.data;
+      try {
+        const res = await axiosPublic.get("/payments", {
+          params: {
+            page: currentPage,
+            limit: itemsPerPage,
+            status: statusFilter === "all" ? undefined : statusFilter,
+          },
+        });
+        return res.data;
+      } catch (error) {
+        console.error("Error fetching payments:", error);
+        throw error;
+      }
     },
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
-  const allPayments = paymentsResponse?.data || [];
-  const pagination = paymentsResponse?.pagination || {};
+  const payments = paymentsData?.data || [];
+  const pagination = paymentsData?.pagination || {};
 
-  const totalPages = pagination.totalPages || 1;
-  const totalItems = pagination.totalItems || 0;
+  // Filter payments by search term
+  const filteredPayments = payments.filter((payment) => {
+    if (!searchTerm) return true;
+    const search = searchTerm.toLowerCase();
+    return (
+      payment.user?.email?.toLowerCase().includes(search) ||
+      payment.user?.name?.toLowerCase().includes(search) ||
+      payment.biodata?.biodataId?.toString().includes(search) ||
+      payment.transactionId?.toLowerCase().includes(search)
+    );
+  });
 
-  const isApproved = (status) => {
-    return status && (status.includes("aprove") || status.includes("approved"));
+  // Handle status change
+  const handleStatusChange = async (payment, newStatus) => {
+    const statusLabels = {
+      pending: "Pending",
+      approved: "Approved",
+      rejected: "Rejected",
+    };
+
+    // Confirmation dialog
+    const result = await Swal.fire({
+      title: `Change Status to ${statusLabels[newStatus]}?`,
+      html: `
+        <div class="text-left space-y-2">
+          <p><strong>Current Status:</strong> <span class="capitalize">${
+            payment.status
+          }</span></p>
+          <p><strong>New Status:</strong> <span class="capitalize">${newStatus}</span></p>
+          <hr class="my-3"/>
+          <p><strong>User:</strong> ${payment.user?.name || "N/A"}</p>
+          <p><strong>Email:</strong> ${payment.user?.email || "N/A"}</p>
+          <p><strong>Biodata:</strong> ${payment.biodata?.name || "N/A"} (ID: ${
+        payment.biodata?.biodataId || "N/A"
+      })</p>
+          <p><strong>Amount:</strong> $${payment.amount || 0}</p>
+          <p><strong>Transaction ID:</strong> ${
+            payment.transactionId || "N/A"
+          }</p>
+        </div>
+      `,
+      icon:
+        newStatus === "approved"
+          ? "success"
+          : newStatus === "rejected"
+          ? "warning"
+          : "info",
+      showCancelButton: true,
+      confirmButtonColor:
+        newStatus === "approved"
+          ? "#10b981"
+          : newStatus === "rejected"
+          ? "#ef4444"
+          : "#3b82f6",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: `Yes, Set to ${statusLabels[newStatus]}`,
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const res = await axiosPublic.put("/payment/update-status", {
+        paymentId: payment._id,
+        newStatus: newStatus,
+      });
+
+      if (res.data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Status Updated!",
+          text: `Payment status changed to ${statusLabels[newStatus]}`,
+          showConfirmButton: false,
+          timer: 2000,
+          background:
+            newStatus === "approved"
+              ? "#f0fdf4"
+              : newStatus === "rejected"
+              ? "#fef2f2"
+              : "#eff6ff",
+        });
+        refetch();
+      } else {
+        throw new Error(res.data.message || "Status update failed");
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text:
+          error.response?.data?.message ||
+          error.message ||
+          "Failed to update payment status",
+        confirmButtonColor: "#ef4444",
+      });
+    }
   };
 
-  const handleToggleStatus = async (payment) => {
-    const biodataId = payment.biodataId;
-    const isCurrentlyApproved = isApproved(payment?.status);
-    const actionText = isCurrentlyApproved ? "Revoke" : "Approve";
-
-    Swal.fire({
-      title: `${actionText} Contact Request?`,
-      text: isCurrentlyApproved
-        ? "This will revoke access to contact information"
-        : "User will be able to access contact information",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: isCurrentlyApproved ? "#f59e0b" : "#10b981",
-      cancelButtonColor: "#94a3b8",
-      confirmButtonText: `Yes, ${actionText}!`,
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const updateData = {
-            biodataId: biodataId,
-          };
-          const res = await axiosPublic.put("/payment/approve", updateData);
-
-          if (res.data.success) {
-            await refetch();
-            Swal.fire({
-              title: "Success!",
-              text: res.data.message,
-              icon: "success",
-              confirmButtonColor: "#fb7185",
-            });
-          } else {
-            Swal.fire({
-              title: "Error!",
-              text: res.data.message || "Failed to update status",
-              icon: "error",
-              confirmButtonColor: "#fb7185",
-            });
-          }
-        } catch (error) {
-          console.error("Error updating status:", error);
-          Swal.fire({
-            title: "Error!",
-            text: "Something went wrong. Please try again.",
-            icon: "error",
-            confirmButtonColor: "#fb7185",
-          });
-        }
-      }
+  // Format date
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
-  // Pagination handlers
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+  // Get status badge
+  const getStatusBadge = (status) => {
+    if (status === "pending") {
+      return (
+        <span className="flex items-center gap-1 bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-semibold">
+          <Clock size={14} />
+          Pending
+        </span>
+      );
+    } else if (status === "approved") {
+      return (
+        <span className="flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
+          <CheckCircle size={14} />
+          Approved
+        </span>
+      );
+    } else if (status === "rejected") {
+      return (
+        <span className="flex items-center gap-1 bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold">
+          <XCircle size={14} />
+          Rejected
+        </span>
+      );
     }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePageClick = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  // Generate page numbers
-  const getPageNumbers = () => {
-    const pages = [];
-    const maxPagesToShow = 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-
-    if (endPage - startPage + 1 < maxPagesToShow) {
-      startPage = Math.max(1, endPage - maxPagesToShow + 1);
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-    return pages;
+    return (
+      <span className="flex items-center gap-1 bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-semibold">
+        <AlertCircle size={14} />
+        Unknown
+      </span>
+    );
   };
 
   if (isLoading) {
+    return <LoadingSpiner />;
+  }
+
+  if (error) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-rose-500"></div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <AlertCircle className="mx-auto text-red-500 mb-4" size={48} />
+          <h2 className="text-xl font-bold text-gray-800 mb-2">
+            Error Loading Data
+          </h2>
+          <p className="text-gray-600 mb-4">{error.message}</p>
+          <button
+            onClick={() => refetch()}
+            className="px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto">
-      <Heading
-        heading="Contact Requests"
-        subheading="Approve or manage contact information requests"
-      />
+    <div>
+      {/* Header */}
+      <div className="mb-8">
+        <Heading
+          subheading="Review and manage contact information access requests"
+          heading="Payment Management Dashboard"
+        />
+      </div>
+      {/* Filters and Search */}
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <div className="flex flex-col md:flex-row gap-4">
+          {/*  Filter */}
+          <div className="flex-1">
+            <label className="flex items-center gap-2 ">
+              <Filter size={16} />
+              Filter by Status
+            </label>
+            <select
+              value={statusFilter}
+              onChange={(e) => {
+                setStatusFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="custom-input"
+            >
+              <option value="all">All Payments</option>
+              <option value="pending">Pending Only</option>
+              <option value="approved">Approved Only</option>
+              <option value="rejected">Rejected Only</option>
+            </select>
+          </div>
 
-      {/* Requests Table */}
-      <div className="bg-white rounded-xl shadow-lg xl:overflow-hidden border-2 border-rose-200">
-        <div className="overflow-x-scroll custom-scrollbar">
-          <table className="min-w-full">
-            <thead className="bg-gradient-to-r from-rose-400 to-rose-500 text-white">
-              <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  User Name
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Email
-                </th>
-                <th className="px-6 py-4 text-center text-sm font-semibold">
-                  Biodata ID
-                </th>
-                <th className="px-6 py-4 text-center text-sm font-semibold">
-                  Biodata Name
-                </th>
-                <th className="px-6 py-4 text-center text-sm font-semibold">
-                  Status
-                </th>
-                <th className="px-6 py-4 text-center text-sm font-semibold">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {allPayments.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan="6"
-                    className="px-6 py-8 text-center text-gray-500"
-                  >
-                    No contact requests found
-                  </td>
-                </tr>
-              ) : (
-                allPayments?.map((payment) => {
-                  const isCurrentlyApproved = isApproved(payment?.status);
+          {/* Search */}
+          <div className="flex-1">
+            <label className="flex items-center gap-2 ">
+              <Search size={16} />
+              Search
+            </label>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by email, name, biodata ID..."
+              className="custom-input"
+            />
+          </div>
 
-                  return (
+          {/* Refresh Button */}
+          <div className="flex items-end">
+            <button
+              onClick={() => refetch()}
+              className="px-6 py-3 bg-rose-400 hover:bg-rose-500 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+            >
+              <RefreshCw size={16} />
+              Refresh
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        {filteredPayments.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Shield className="text-gray-400" size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-700 mb-2">
+              No Payment Requests
+            </h3>
+            <p className="text-gray-500">
+              {statusFilter === "pending"
+                ? "No pending payment requests at the moment"
+                : "No payment requests found matching your filters"}
+            </p>
+          </div>
+        ) : (
+          <>
+            {/*Table */}
+            <div className=" overflow-x-auto custom-scrollbar">
+              <table className="w-full">
+                <thead className="bg-rose-400 text-white">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      User
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      Biodata
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      Payment Amount
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      {" "}
+                      Payment Date
+                    </th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold">
+                      Status
+                    </th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {filteredPayments.map((payment, index) => (
                     <tr
                       key={payment._id}
-                      className="hover:bg-rose-50 transition-colors"
+                      className={`hover:bg-blue-50 transition-colors ${
+                        index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                      }`}
                     >
+                      {/* User Info */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
-                            <span className="text-rose-600 font-bold">
-                              {payment?.name?.charAt(0).toUpperCase()}
-                            </span>
+                          <div>
+                            <p className="font-semibold text-gray-800">
+                              {payment.user?.name || "N/A"}
+                            </p>
+                            <p className="text-xs text-gray-500 flex items-center gap-1">
+                              <Mail size={12} />
+                              {payment.user?.email || "N/A"}
+                            </p>
                           </div>
-                          <span className="font-medium text-gray-800">
-                            {payment?.name}
-                          </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-gray-600">
-                        {payment?.email}
-                      </td>
+
+                      {/* Biodata Info */}
                       <td className="px-6 py-4">
-                        <div className="flex justify-center">
-                          <span className="bg-rose-100 text-rose-600 px-3 py-1 rounded-full font-semibold text-sm flex items-center gap-2">
-                            <FaIdCard /> {payment?.biodataId}
-                          </span>
+                        <div className="flex items-center gap-3">
+                          <div>
+                            <p className="font-semibold text-gray-800">
+                              Biodata ID: {payment.biodata?.biodataId || "N/A"}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              {payment.biodata?.name || "N/A"}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {payment.biodata?.ContactEmail || "N/A"}
+                            </p>
+                          </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-center text-gray-600">
-                        {payment?.biodtaName}
-                      </td>
+
+                      {/* Payment Info */}
                       <td className="px-6 py-4">
-                        <div className="flex justify-center">
-                          {!isCurrentlyApproved ? (
-                            <span className="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 shadow-sm">
-                              <MdPending className="text-lg" /> Pending
-                            </span>
-                          ) : (
-                            <span className="bg-green-100 text-green-700 px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 shadow-sm">
-                              <MdVerified className="text-lg" /> Approved
-                            </span>
-                          )}
+                        <div>
+                          <p className="font-bold text-green-600 text-lg">
+                            ${payment.amount || 0}
+                          </p>
+                          <p className="text-xs text-gray-500 flex items-center gap-1">
+                            <CreditCard size={12} />
+                            {payment.transactionId
+                              ? `...${payment.transactionId.slice(-8)}`
+                              : "N/A"}
+                          </p>
                         </div>
                       </td>
+
+                      {/* Date */}
                       <td className="px-6 py-4">
-                        <div className="flex justify-center">
+                        <p className="text-sm text-gray-600 flex items-center gap-1">
+                          <Calendar size={14} />
+                          {formatDate(payment.createdAt)}
+                        </p>
+                      </td>
+
+                      {/* Status */}
+                      <td className="px-6 py-4 text-center">
+                        {getStatusBadge(payment.status)}
+                      </td>
+
+                      {/* Actions  Status Toggle Buttons */}
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-center gap-2">
                           <button
-                            onClick={() => handleToggleStatus(payment)}
-                            className={`px-5 py-2 rounded-lg font-semibold text-sm transition-all duration-200 transform hover:scale-105 shadow-md flex items-center gap-2 ${
-                              !isCurrentlyApproved
-                                ? "bg-gradient-to-r from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white"
-                                : "bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-white"
+                            onClick={() =>
+                              handleStatusChange(payment, "pending")
+                            }
+                            disabled={payment.status === "pending"}
+                            className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 ${
+                              payment.status === "pending"
+                                ? "bg-yellow-200 text-yellow-600 cursor-not-allowed"
+                                : "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
                             }`}
+                            title="Set to Pending"
                           >
-                            {!isCurrentlyApproved ? (
-                              <>
-                                <FaCheckCircle /> Approve
-                              </>
-                            ) : (
-                              <>
-                                <FaTimesCircle /> Revoke
-                              </>
-                            )}
+                            <Clock size={14} />
+                            Pending
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleStatusChange(payment, "approved")
+                            }
+                            disabled={payment.status === "approved"}
+                            className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 ${
+                              payment.status === "approved"
+                                ? "bg-green-200 text-green-600 cursor-not-allowed"
+                                : "bg-green-100 text-green-700 hover:bg-green-200"
+                            }`}
+                            title="Approve"
+                          >
+                            <CheckCircle size={14} />
+                            Approve
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleStatusChange(payment, "rejected")
+                            }
+                            disabled={payment.status === "rejected"}
+                            className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 ${
+                              payment.status === "rejected"
+                                ? "bg-red-200 text-red-600 cursor-not-allowed"
+                                : "bg-red-100 text-red-700 hover:bg-red-200"
+                            }`}
+                            title="Reject"
+                          >
+                            <XCircle size={14} />
+                            Reject
                           </button>
                         </div>
                       </td>
                     </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Pagination  */}
-      <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-sm text-gray-600">
-          Page{" "}
-          <span className="font-semibold text-rose-600">
-            {pagination.currentPage || 1}
-          </span>{" "}
-          of <span className="font-semibold text-rose-600">{totalPages}</span> •
-          Showing{" "}
-          <span className="font-semibold text-rose-600">
-            {allPayments.length}
-          </span>{" "}
-          of <span className="font-semibold text-rose-600">{totalItems}</span>{" "}
-          requests
-        </div>
-
-        {totalPages > 1 && (
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-              className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
-                currentPage === 1
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-rose-500 text-white hover:bg-rose-600"
-              }`}
-            >
-              <FaChevronLeft />
-              <span className="hidden sm:inline">Previous</span>
-            </button>
-
-            <div className="flex gap-2">
-              {getPageNumbers().map((pageNum) => (
-                <button
-                  key={pageNum}
-                  onClick={() => handlePageClick(pageNum)}
-                  className={`w-10 h-10 rounded-lg font-medium transition-all ${
-                    currentPage === pageNum
-                      ? "bg-rose-500 text-white shadow-md"
-                      : "bg-gray-200 text-gray-700 hover:bg-rose-100"
-                  }`}
-                >
-                  {pageNum}
-                </button>
-              ))}
+                  ))}
+                </tbody>
+              </table>
             </div>
-
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
-                currentPage === totalPages
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-rose-500 text-white hover:bg-rose-600"
-              }`}
-            >
-              <span className="hidden sm:inline">Next</span>
-              <FaChevronRight />
-            </button>
-          </div>
+          </>
         )}
       </div>
+
+      {/* Pagination */}
+      {pagination.totalPages > 1 && (
+        <div className="mt-6 flex items-center justify-between bg-white rounded-xl shadow-lg p-4">
+          <div className="text-sm text-gray-600">
+            Showing page <strong>{pagination.currentPage}</strong> of{" "}
+            <strong>{pagination.totalPages}</strong>
+            <span className="ml-2">({pagination.totalItems} total items)</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+              disabled={!pagination.hasPrevPage}
+              className="px-4 py-2 bg-rose-400 text-white rounded-lg font-semibold hover:bg-rose-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+            >
+              <ChevronLeft size={16} />
+              Previous
+            </button>
+
+            <span className="text-sm font-semibold text-gray-700 px-3">
+              Page {pagination.currentPage}
+            </span>
+
+            <button
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              disabled={!pagination.hasNextPage}
+              className="px-4 py-2 bg-rose-400 text-white rounded-lg font-semibold hover:bg-rose-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+            >
+              Next
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
