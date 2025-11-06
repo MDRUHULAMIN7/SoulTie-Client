@@ -20,18 +20,18 @@ const PremiumMember = () => {
       setLoading(true);
       setError(null);
 
-      let endpoint = '/premium-biodatas';
-      if (sort === 'asc') {
-        endpoint = '/premium-biodatas?sortBy=age&order=asc';
-      } else if (sort === 'desc') {
-        endpoint = '/premium-biodatas?sortBy=age&order=desc';
+      let endpoint = "/premium-biodatas";
+      if (sort === "asc") {
+        endpoint = "/premium-biodatas?sortBy=age&order=asc";
+      } else if (sort === "desc") {
+        endpoint = "/premium-biodatas?sortBy=age&order=desc";
       }
 
       const response = await axiosPublic.get(endpoint);
       setBiodatas(response.data);
     } catch (err) {
-      setError('Failed to load premium biodatas. Please try again.');
-      console.error('Error fetching biodatas:', err);
+      setError("Failed to load premium biodatas. Please try again.");
+      console.error("Error fetching biodatas:", err);
     } finally {
       setLoading(false);
     }
@@ -47,7 +47,9 @@ const PremiumMember = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-16 h-16 border-4 border-rose-400 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-gray-600 font-medium">Loading Premium Members...</p>
+          <p className="text-gray-600 font-medium">
+            Loading Premium Members...
+          </p>
         </div>
       </div>
     );
@@ -71,7 +73,6 @@ const PremiumMember = () => {
 
   return (
     <div className=" mx-auto px-2 md:px-8 lg:px-16">
-   
       <div className="mb-8">
         <Heading
           heading="Premium Biodatas"
@@ -79,40 +80,46 @@ const PremiumMember = () => {
         />
       </div>
 
-    
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-rose-500" />
           <span className="text-gray-700 font-medium">
-            {biodatas.length} Premium {biodatas.length === 1 ? 'Member' : 'Members'}
+            {biodatas.length} Premium{" "}
+            {biodatas.length === 1 ? "Member" : "Members"}
           </span>
         </div>
 
-     
         <div className="relative group">
           <button className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-rose-400 to-rose-500 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300">
             <Filter className="w-4 h-4" />
             <span className="font-medium">
-              {sortOrder === 'asc' ? 'Age: Low to High' : sortOrder === 'desc' ? 'Age: High to Low' : 'Sort by Age'}
+              {sortOrder === "asc"
+                ? "Age: Low to High"
+                : sortOrder === "desc"
+                ? "Age: High to Low"
+                : "Sort by Age"}
             </span>
           </button>
 
-       
           <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
             <div className="py-2">
               <button
-                onClick={() => handleSortChange('asc')}
+                onClick={() => handleSortChange("asc")}
                 className={`w-full px-4 py-2.5 text-left flex items-center gap-3 hover:bg-rose-50 transition-colors ${
-                  sortOrder === 'asc' ? 'bg-rose-50 text-rose-600' : 'text-gray-700'
+                  sortOrder === "asc"
+                    ? "bg-rose-50 text-rose-600"
+                    : "text-gray-700"
                 }`}
               >
                 <SortAsc className="w-4 h-4" />
                 <span>Age: Low to High</span>
               </button>
               <button
-                onClick={() => handleSortChange('desc')}
+                onClick={() => handleSortChange("desc")}
                 className={`w-full px-4 py-2.5 text-left flex items-center gap-3 hover:bg-rose-50 transition-colors ${
-                  sortOrder === 'desc' ? 'bg-rose-50 text-rose-600' : 'text-gray-700'
+                  sortOrder === "desc"
+                    ? "bg-rose-50 text-rose-600"
+                    : "text-gray-700"
                 }`}
               >
                 <SortDesc className="w-4 h-4" />
@@ -134,14 +141,17 @@ const PremiumMember = () => {
         </div>
       </div>
 
- 
       {biodatas?.length === 0 ? (
         <div className="text-center py-16">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-rose-100 rounded-full mb-4">
             <Sparkles className="w-8 h-8 text-rose-500" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">No Premium Members Found</h3>
-          <p className="text-gray-500">Check back later for new premium profiles</p>
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            No Premium Members Found
+          </h3>
+          <p className="text-gray-500">
+            Check back later for new premium profiles
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -151,13 +161,14 @@ const PremiumMember = () => {
         </div>
       )}
 
-
-        <div className="text-center mt-10">
-          <Link to={'/biodatas'} className="px-8 py-3 bg-white border-2 border-rose-400 text-rose-500 font-semibold rounded-lg hover:bg-rose-500 hover:text-white transition-all duration-300">
-            View All Biodatas
-          </Link>
-        </div>
-   
+      <div className="text-center mt-10">
+        <Link
+          to={"/biodatas"}
+          className="px-8 py-3 bg-white border-2 border-rose-400 text-rose-500 font-semibold rounded-lg hover:bg-rose-500 hover:text-white transition-all duration-300"
+        >
+          View All Biodatas
+        </Link>
+      </div>
     </div>
   );
 };

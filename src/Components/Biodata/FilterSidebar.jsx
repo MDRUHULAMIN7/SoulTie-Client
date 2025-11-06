@@ -174,28 +174,6 @@ const FilterSidebar = ({ filters, showFilters, activeFiltersCount, onFilterChang
               ))}
             </div>
           </FilterSection>
-
-          {/* Membership Type Filter */}
-          <FilterSection title="Membership" icon={Filter} sectionKey="membership">
-            <div className="space-y-2">
-              {[
-                { value: 'premium', label: 'Premium Members', color: 'from-amber-400 to-amber-500' },
-                { value: 'requested', label: 'Requested', color: 'from-blue-400 to-blue-500' }
-              ].map((item) => (
-                <button
-                  key={item.value}
-                  onClick={() => onFilterChange('role', item.value)}
-                  className={`w-full px-4 py-2.5 rounded-lg text-left font-medium transition-all ${
-                    filters.role === item.value
-                      ? `bg-gradient-to-r ${item.color} text-white shadow-md`
-                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          </FilterSection>
         </div>
       </div>
     </aside>

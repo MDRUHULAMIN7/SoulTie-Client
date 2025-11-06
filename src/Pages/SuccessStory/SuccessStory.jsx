@@ -6,12 +6,26 @@ import 'swiper/css/navigation';
 import { Rating } from '@smastrom/react-rating';
 import { Parallax, Navigation } from 'swiper/modules';
 import '@smastrom/react-rating/style.css';
+import UseAxiosPublic from "../../Hooks/UseAxiosPublic";
+import { useQuery } from "@tanstack/react-query";
+import UseAuth from "../../Hooks/UseAuth";
 
-const SuccessStory = ({ data }) => {
-    if (!data.length > 0) {
-        return null; // Return null if there's no data
-    }
+const SuccessStory = () => {
 
+      const {loading,user}= UseAuth()
+  const axiosPublic= UseAxiosPublic()
+    const {data=[]}=useQuery({
+        queryKey:["data"],
+        enabled:!!user ||!loading,
+        queryFn:async()=>{
+            const res = await axiosPublic.get('/success')
+           
+          return res?.data?.data
+            
+        }
+        
+    })
+ console.log(data.data)
     return (
         <div className="relative mt-10 mb-10 bg-no-repeat bg-fixed h-screen bg-cover" style={{ backgroundImage: `url(${bg})` }}>
             <div className="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center">
@@ -53,16 +67,16 @@ const SuccessStory = ({ data }) => {
                             }}
                             data-swiper-parallax="-23%"
                         ></div>
-                        {data.map((item) => (
+                        {data && data?.data?.map((item) => (
                             <SwiperSlide key={item._id}>
                                 <div className="w-full max-w-sm mx-auto rounded-lg shadow-lg bg-white overflow-hidden">
-                                    <img src={item.Coupleimage} alt="" className="object-cover object-center w-full h-64" />
+                                    <img src={item.Coupleimage} alt="" className="object-cover object-center w-full h-72" />
                                     <div className="p-6">
                                         <div className="flex items-center justify-between mb-4">
                                             <h1 className="text-lg font-semibold text-rose-500">Rating</h1>
                                             <Rating className="my-3" style={{ maxWidth: 150 }} value={item.Ratings} />
                                         </div>
-                                        <p className="text-gray-700">{item.shortStory}</p>
+                                        <p className="text-gray-700">{item.shortStory.slice(0,150)}</p>
                                     </div>
                                 </div>
                             </SwiperSlide>

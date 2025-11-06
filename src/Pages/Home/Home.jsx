@@ -23,6 +23,7 @@ const Home = () => {
         enabled:!!user ||!loading,
         queryFn:async()=>{
             const res = await axiosPublic.get('/success')
+            console.log(res)
           return res?.data
             
         }
