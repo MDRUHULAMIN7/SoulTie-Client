@@ -16,34 +16,13 @@ const About = () => {
             < Heading heading={" About SoulTie"} subheading={"Connecting Hearts, Creating Futures in Bangladesh"} />
 
         <section className="space-y-12">
-                {/* Mission Section */}
-            <div className=" ">
-                <div className=" mx-auto">
-                    <div className="text-center mb-12">
-                        <span className="inline-block bg-rose-100 text-rose-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                            Our Mission
-                        </span>
-                        <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
-                            Building Meaningful Relationships
-                        </h2>
-                        <p className="text-xl text-gray-600  mx-auto leading-relaxed">
-                            At SoulTie, we are dedicated to helping individuals find their perfect match and build meaningful relationships. 
-                            Our mission is to provide a safe, trustworthy, and personalized platform where you can connect with like-minded 
-                            individuals and start your journey towards a happy and fulfilling life together.
-                        </p>
-                    </div>
-
-                </div>
-            </div>
 
             {/* Features Section */}
             <div className=" ">
                 <div className=" mx-auto">
                     <div className="text-center mb-12">
-                        <span className="inline-block bg-rose-100 text-rose-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                            What We Offer
-                        </span>
-                        <h2 className="text-4xl md:text-5xl font-bold text-gray-800">
+                        
+                        <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
                             Why Choose SoulTie?
                         </h2>
                     </div>
@@ -100,11 +79,8 @@ const About = () => {
             <div className="">
                 <div className=" mx-auto">
                     <div className="text-center mb-12">
-                        <span className="inline-block bg-rose-100 text-rose-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                            Our Team
-                        </span>
-                        <h2 className="text-4xl md:text-5xl font-bold text-gray-800">
-                            Dedicated to Your Success
+                        <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+                           Our Team  Dedicated to Your Success
                         </h2>
                     </div>
 

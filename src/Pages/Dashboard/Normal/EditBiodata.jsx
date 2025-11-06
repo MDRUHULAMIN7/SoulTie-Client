@@ -24,6 +24,7 @@ import {
   FaEdit,
   FaPlus,
 } from "react-icons/fa";
+import LoadingSpiner from "../../../Components/Shareds/LoadingSpiner";
 
 const EditBiodata = () => {
   const { user } = UseAuth();
@@ -59,7 +60,7 @@ const EditBiodata = () => {
 
     try {
       // Upload image if it's a new file
-      let photoUrl = existingBiodata?.photo; // Use existing photo if available
+      let photoUrl = existingBiodata?.photo;
       
       if (data.photo && data.photo[0]) {
         const imagefile = { image: data.photo[0] };
@@ -206,16 +207,11 @@ const EditBiodata = () => {
   );
 
   if (checkingBiodata) {
-    return (
-      <div className="flex justify-center items-center min-h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-500"></div>
-      </div>
-    );
+    return <LoadingSpiner/>;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-pink-100 p-4 lg:p-6">
-      <div className="max-w-6xl mx-auto">
+      <div >
         {/* Header */}
         <div className="mb-8">
           <Heading
@@ -561,7 +557,7 @@ const EditBiodata = () => {
           </div>
         </div>
       </div>
-    </div>
+
   );
 };
 

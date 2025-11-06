@@ -77,7 +77,7 @@ const Contact = () => {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name">Your Name *</label>
@@ -166,6 +166,10 @@ const Contact = () => {
                 <h3 className="text-3xl font-bold text-gray-800 mb-6">
                   We're Here to Help You Find Love
                 </h3>
+                 <p className="text-gray-600 leading-relaxed">
+                  Fill out the form below and our team will get back to you
+                  within 24 hours.
+                </p>
               </div>
 
               {/* Info Cards */}

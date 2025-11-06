@@ -116,7 +116,7 @@ const MyFavouriteBiodata = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-rose-100">
-                {favData.map((biodata) => (
+                {favData?.map((biodata) => (
                   <tr
                     key={biodata._id}
                     className="hover:bg-rose-50 transition-colors duration-200"

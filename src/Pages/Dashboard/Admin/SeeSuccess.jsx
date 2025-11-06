@@ -51,7 +51,6 @@ const SeeSuccess = () => {
 
   // Handle modal
   const handleModal = (story) => {
-    console.log(story);
     setModalData(story);
     setIsOpen(true);
   };

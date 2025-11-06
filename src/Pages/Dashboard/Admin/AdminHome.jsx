@@ -115,7 +115,7 @@ const AdminHome = () => {
     enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosPublic.get("/admin-info");
-
+      console.log(res)
       return res?.data?.data;
     }
   });

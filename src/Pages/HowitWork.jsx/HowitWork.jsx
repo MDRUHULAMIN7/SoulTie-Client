@@ -1,3 +1,11 @@
+import { useState } from "react";
+import {
+  FiUser,
+  FiSearch,
+  FiMessageCircle,
+  FiHeart,
+  FiCheckCircle,
+} from "react-icons/fi";
 import img1 from "../../images/download.png";
 import img2 from "../../images/images__1_-removebg-preview.png";
 import img3 from "../../images/images-removebg-preview.png";
@@ -5,79 +13,158 @@ import img4 from "../../images/got.png";
 import Heading from "../Dashboard/Sidebar/Heading";
 
 const HowitWork = () => {
+  const [activeStep, setActiveStep] = useState(null);
+
+  const steps = [
+    {
+      number: 1,
+      icon: FiUser,
+      title: "Create Your Biodata",
+      description:
+        "Create your authentic biodata with detailed information. Be honest and transparent to find the perfect match.",
+      image: img1,
+      gradient: "from-rose-50 to-pink-50",
+      numberGradient: "from-rose-400 to-rose-500",
+      borderColor: "border-rose-200",
+    },
+    {
+      number: 2,
+      icon: FiSearch,
+      title: "Find Your Partner",
+      description:
+        "Discover compatible matches with our intelligent matching system based on your preferences and values.",
+      image: img2,
+      gradient: "from-pink-50 to-rose-50",
+      numberGradient: "from-pink-400 to-rose-500",
+      borderColor: "border-pink-200",
+    },
+    {
+      number: 3,
+      icon: FiMessageCircle,
+      title: "Connect & Communicate",
+      description:
+        "Initiate contact through our secure platform. Get to know each other before meeting in person.",
+      image: img3,
+      gradient: "from-rose-50 to-pink-50",
+      numberGradient: "from-rose-400 to-rose-500",
+      borderColor: "border-rose-200",
+    },
+    {
+      number: 4,
+      icon: FiHeart,
+      title: "Start Your Journey",
+      description:
+        "Begin your beautiful journey together. Join our success stories and inspire others to find love.",
+      image: img4,
+      gradient: "from-pink-50 to-rose-50",
+      numberGradient: "from-pink-400 to-rose-500",
+      borderColor: "border-pink-200",
+    },
+  ];
+
   return (
-    <div className="w-full mx-auto  rounded-lg py-5 px-2 md:px-8 lg:px-16">
+    <div className="mx-auto px-2 md:px-8 lg:px-16 mt-4 ">
       {/* Heading */}
-      <Heading
-        heading={"How It Works"}
-        subheading={"Our working process is preplanned and very successful."}
-      />
+      <div className="text-center mb-16">
+        <Heading
+          heading={"How It Works"}
+          subheading={
+            "Your journey to finding the perfect life partner in four simple steps"
+          }
+        />
+      </div>
 
-      {/* Grid Layout for Steps */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        {/* Step 1 */}
-        <div className="relative md:w-auto mx-auto md:h-64 p-6 bg-gradient-to-br from-pink-50 to-rose-100 border-2 rounded-3xl border-rose-200 shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl flex justify-center items-center gap-4">
-          <div>
-            <h1 className="bg-gradient-to-br from-rose-200 to-rose-400 text-white text-xl rounded-full h-12 w-12 flex items-center justify-center mb-4">
-              1
-            </h1>
-            <h1 className="md:text-3xl text-2xl font-bold text-gray-700 mb-2">Create Your Biodata</h1>
-            <p className="md:text-lg text-gray-600">
-              Create your own biodata with authentic information about yourself and be honest.
-            </p>
-          </div>
-          <div>
-            <img className="md:h-52 transition-transform transform hover:scale-105" src={img1} alt="Step 1" />
-          </div>
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+        {steps.map((step, index) => (
+          <div
+            key={step.number}
+            className={`relative group cursor-pointer transition-all duration-500 ${
+              activeStep === index ? "transform scale-102" : "hover:scale-100"
+            }`}
+            onMouseEnter={() => setActiveStep(index)}
+            onMouseLeave={() => setActiveStep(null)}
+          >
+            {/* Main Card */}
+            <div
+              className={`
+              relative bg-white rounded-3xl p-8 h-full
+              border-2 ${step.borderColor}
+              shadow-lg hover:shadow-2xl
+              transition-all duration-500
+              overflow-hidden
+              ${activeStep === index ? "ring-2 ring-rose-300" : ""}
+            `}
+            >
+              {/* Background Gradient Overlay */}
+              <div
+                className={`
+                absolute inset-0 bg-gradient-to-br ${step.gradient} 
+                opacity-0 group-hover:opacity-100 
+                transition-opacity duration-500
+              `}
+              ></div>
 
-        {/* Step 2 */}
-        <div className="relative md:w-auto mx-auto md:h-64 p-6 bg-gradient-to-br from-rose-50 to-pink-100 rounded-3xl shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl flex justify-center items-center gap-4">
-          <div>
-            <h1 className="bg-gradient-to-br from-pink-300 to-rose-500 text-white text-xl rounded-full h-12 w-12 flex items-center justify-center mb-4">
-              2
-            </h1>
-            <h1 className="md:text-3xl text-2xl font-bold text-gray-700 mb-2">Find Your Partner</h1>
-            <p className="md:text-lg text-gray-600">
-              Find your life partner with SoulTie. We suggest matches based on your preferences.
-            </p>
-          </div>
-          <div>
-            <img className="md:h-52 transition-transform transform hover:scale-105" src={img2} alt="Step 2" />
-          </div>
-        </div>
+              {/* Content */}
+              <div className="relative z-10 flex flex-col lg:flex-row items-center gap-6">
+                {/* Left Side - Content */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div
+                      className={`
+                      relative w-14 h-14 rounded-full 
+                      bg-gradient-to-br ${step.numberGradient}
+                      flex items-center justify-center
+                      shadow-lg group-hover:shadow-xl
+                      transition-all duration-300
+                      transform group-hover:scale-110
+                    `}
+                    >
+                      <span className="text-white font-bold text-lg">
+                        {step.number}
+                      </span>
 
-        {/* Step 3 */}
-        <div className="relative md:w-auto mx-auto md:h-64 p-6 bg-gradient-to-br from-pink-50 to-rose-100 rounded-3xl shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl flex justify-center items-center gap-4">
-          <div>
-            <h1 className="bg-gradient-to-br from-rose-200 to-rose-400 text-white text-xl rounded-full h-12 w-12 flex items-center justify-center mb-4">
-              3
-            </h1>
-            <h1 className="md:text-3xl text-2xl font-bold text-gray-700 mb-2">Contact with Partner</h1>
-            <p className="md:text-lg text-gray-600">
-              After finding a match, contact them through SoulTie after payment and arrange a meeting.
-            </p>
-          </div>
-          <div>
-            <img className="md:h-52 transition-transform transform hover:scale-105" src={img3} alt="Step 3" />
-          </div>
-        </div>
+                      {/* Success Checkmark */}
+                      <FiCheckCircle className="absolute -top-1 -right-1 w-6 h-6 text-white bg-green-500 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
 
-        {/* Step 4 */}
-        <div className="relative md:w-auto mx-auto md:h-64 p-6 bg-gradient-to-br from-rose-50 to-pink-100 border-2 rounded-3xl border-rose-200 shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl flex justify-center items-center gap-4">
-          <div>
-            <h1 className="bg-gradient-to-br from-pink-300 to-rose-500 text-white text-xl rounded-full h-12 w-12 flex items-center justify-center mb-4">
-              4
-            </h1>
-            <h1 className="md:text-3xl text-2xl font-bold text-gray-700 mb-2">Engagement</h1>
-            <p className="md:text-lg text-gray-600">
-              Once both parties agree, they become one of our successful couples, inspiring others.
-            </p>
+                    {/* Icon */}
+                    <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center text-rose-500 group-hover:bg-rose-500 group-hover:text-white transition-all duration-300">
+                      <step.icon className="w-6 h-6" />
+                    </div>
+                  </div>
+
+                  {/* Title & Description */}
+                  <h3 className="text-2xl font-bold text-gray-800 mb-3 group-hover:text-gray-900 transition-colors">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed mb-4 group-hover:text-gray-700 transition-colors">
+                    {step.description}
+                  </p>
+                </div>
+
+                {/* Right Side - Image */}
+                <div className="flex-shrink-0">
+                  <div className="relative">
+                    <img
+                      className={`
+                        w-48 h-48 object-contain
+                        transition-all duration-500
+                        ${
+                          activeStep === index
+                            ? "transform scale-110 rotate-2"
+                            : "group-hover:scale-105 group-hover:rotate-1"
+                        }
+                        filter drop-shadow-lg
+                      `}
+                      src={step.image}
+                      alt={`Step ${step.number}`}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <img className="md:h-52 transition-transform transform hover:scale-105" src={img4} alt="Step 4" />
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
